@@ -1,0 +1,25 @@
+{
+  "name": "Task Garden",
+  "short_name": "Task Garden",
+  "description": "Media pendukung BK untuk membantu manajemen waktu, tugas, refleksi, dan evaluasi.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#faf7ff",
+  "theme_color": "#9b85cf",
+  "lang": "id",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

@@ -1,0 +1,2907 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Task Garden 🌱</title>
+
+<style>
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+}
+
+html{
+  scroll-behavior:smooth;
+}
+
+body{
+  font-family:Arial, Helvetica, sans-serif;
+  background:#eef6ef;
+  color:#26352a;
+  min-height:100vh;
+}
+
+button,
+input,
+textarea{
+  font-family:inherit;
+}
+
+button{
+  cursor:pointer;
+}
+
+.app{
+  width:100%;
+  max-width:480px;
+  min-height:100vh;
+  margin:auto;
+  background:#f8fcf8;
+  position:relative;
+  padding-bottom:90px;
+}
+
+/* ================= HEADER ================= */
+
+.header{
+  background:linear-gradient(135deg,#4f8f5b,#75b67d);
+  color:white;
+  padding:22px 20px 26px;
+  border-radius:0 0 28px 28px;
+  box-shadow:0 4px 15px rgba(0,0,0,.08);
+}
+
+.header-top{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+
+.logo{
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+
+.logo-icon{
+  width:45px;
+  height:45px;
+  border-radius:14px;
+  background:rgba(255,255,255,.2);
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  font-size:25px;
+}
+
+.logo h1{
+  font-size:21px;
+}
+
+.logo p{
+  font-size:12px;
+  opacity:.9;
+  margin-top:3px;
+}
+
+.today{
+  font-size:11px;
+  background:rgba(255,255,255,.18);
+  padding:7px 10px;
+  border-radius:20px;
+}
+
+/* ================= FINAL LOOK ================= */
+
+body{
+  background:linear-gradient(180deg,#eaf5ec 0%,#f4f9f4 55%,#edf6ee 100%);
+}
+
+.app{
+  box-shadow:0 0 35px rgba(52,91,60,.10);
+  overflow:hidden;
+}
+
+.header{
+  position:relative;
+  overflow:hidden;
+}
+
+.header::after{
+  content:"";
+  position:absolute;
+  width:170px;
+  height:170px;
+  border-radius:50%;
+  right:-70px;
+  top:-85px;
+  background:rgba(255,255,255,.10);
+}
+
+.user-greeting{
+  margin-top:18px;
+  position:relative;
+  z-index:1;
+}
+
+.user-greeting .hello{
+  font-size:13px;
+  opacity:.88;
+}
+
+.user-greeting .name{
+  font-size:25px;
+  font-weight:800;
+  margin-top:3px;
+  letter-spacing:-.3px;
+}
+
+.name-edit{
+  border:0;
+  background:rgba(255,255,255,.18);
+  color:white;
+  border-radius:999px;
+  padding:7px 11px;
+  font-size:11px;
+  margin-top:9px;
+}
+
+.welcome{
+  position:relative;
+  overflow:hidden;
+}
+
+.welcome::after{
+  content:"🌿";
+  position:absolute;
+  right:14px;
+  bottom:-8px;
+  font-size:55px;
+  opacity:.16;
+}
+
+.quick-card:hover{
+  transform:translateY(-2px);
+}
+
+.garden-card{
+  position:relative;
+  overflow:hidden;
+}
+
+.garden-card::after{
+  content:"🌼";
+  position:absolute;
+  right:12px;
+  bottom:-12px;
+  font-size:52px;
+  opacity:.15;
+}
+
+/* Welcome name modal */
+.name-overlay{
+  position:fixed;
+  inset:0;
+  background:rgba(35,57,40,.52);
+  backdrop-filter:blur(5px);
+  -webkit-backdrop-filter:blur(5px);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+  z-index:9999;
+}
+
+.name-overlay.hidden{display:none;}
+
+.name-modal{
+  width:min(430px,100%);
+  background:#fafffa;
+  border-radius:28px;
+  padding:26px 22px 22px;
+  box-shadow:0 20px 60px rgba(22,45,27,.25);
+  text-align:center;
+  animation:popIn .25s ease-out;
+}
+
+.name-plant{
+  width:70px;
+  height:70px;
+  border-radius:22px;
+  background:linear-gradient(135deg,#dff3e1,#eef8e9);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:38px;
+  margin:0 auto 14px;
+}
+
+.name-modal h2{
+  color:#315c39;
+  font-size:22px;
+  margin-bottom:7px;
+}
+
+.name-modal p{
+  color:#708077;
+  font-size:13px;
+  line-height:1.55;
+  margin-bottom:17px;
+}
+
+.name-modal input{
+  width:100%;
+  border:1px solid #d8e8da;
+  background:white;
+  border-radius:15px;
+  padding:13px 14px;
+  outline:none;
+  font-size:14px;
+  color:#29422f;
+}
+
+.name-modal input:focus{
+  border-color:#76ad7e;
+  box-shadow:0 0 0 3px rgba(118,173,126,.13);
+}
+
+.name-modal .btn{
+  width:100%;
+  margin-top:10px;
+}
+
+.name-note{
+  font-size:10px !important;
+  margin:10px 0 0 !important;
+  color:#93a097 !important;
+}
+
+@keyframes popIn{
+  from{opacity:0;transform:translateY(10px) scale(.98)}
+  to{opacity:1;transform:translateY(0) scale(1)}
+}
+
+@media (prefers-reduced-motion:reduce){
+  *{scroll-behavior:auto !important;transition:none !important;animation:none !important;}
+}
+
+/* ================= PAGE ================= */
+
+.page{
+  display:none;
+  padding:18px;
+}
+
+.page.active{
+  display:block;
+}
+
+.page-title{
+  margin-bottom:15px;
+}
+
+.page-title h2{
+  font-size:22px;
+  color:#2d5134;
+}
+
+.page-title p{
+  color:#718077;
+  font-size:13px;
+  margin-top:4px;
+}
+
+/* ================= CARDS ================= */
+
+.card{
+  background:white;
+  border-radius:20px;
+  padding:17px;
+  margin-bottom:15px;
+  box-shadow:0 4px 14px rgba(53,89,60,.07);
+  border:1px solid #edf3ed;
+}
+
+.card-title{
+  font-size:16px;
+  font-weight:bold;
+  color:#315c39;
+  margin-bottom:6px;
+}
+
+.card-desc{
+  font-size:12px;
+  color:#7a877d;
+  line-height:1.5;
+  margin-bottom:13px;
+}
+
+/* ================= HOME ================= */
+
+.welcome{
+  background:linear-gradient(135deg,#e2f4e4,#f3faef);
+  border:1px solid #d9ecd9;
+}
+
+.welcome h2{
+  font-size:21px;
+  color:#315c39;
+  margin-bottom:7px;
+}
+
+.welcome p{
+  font-size:13px;
+  line-height:1.6;
+  color:#607164;
+}
+
+.quick-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
+}
+
+.quick-card{
+  border:0;
+  background:white;
+  padding:17px 13px;
+  border-radius:18px;
+  text-align:left;
+  box-shadow:0 4px 12px rgba(53,89,60,.07);
+  border:1px solid #edf3ed;
+  transition:.2s;
+}
+
+.quick-card:active{
+  transform:scale(.97);
+}
+
+.quick-icon{
+  font-size:25px;
+  margin-bottom:9px;
+}
+
+.quick-card strong{
+  display:block;
+  font-size:14px;
+  color:#315c39;
+}
+
+.quick-card span{
+  display:block;
+  font-size:11px;
+  color:#819087;
+  margin-top:4px;
+}
+
+/* ================= PROGRESS ================= */
+
+.garden-card{
+  background:linear-gradient(135deg,#edf9ec,#dff1df);
+  border-radius:22px;
+  padding:20px;
+  margin-bottom:15px;
+}
+
+.garden-head{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+
+.garden-icon{
+  font-size:43px;
+}
+
+.progress-number{
+  font-size:28px;
+  font-weight:bold;
+  color:#397347;
+}
+
+.progress-label{
+  font-size:11px;
+  color:#718077;
+}
+
+.progress-bar{
+  height:10px;
+  background:#d0e2d1;
+  border-radius:20px;
+  overflow:hidden;
+  margin-top:15px;
+}
+
+.progress-fill{
+  height:100%;
+  width:0%;
+  background:#5c9d64;
+  border-radius:20px;
+  transition:.3s;
+}
+
+/* ================= STATS ================= */
+
+.stats{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:9px;
+  margin-bottom:15px;
+}
+
+.stat{
+  background:white;
+  border-radius:16px;
+  padding:14px 8px;
+  text-align:center;
+  border:1px solid #edf3ed;
+}
+
+.stat strong{
+  display:block;
+  font-size:19px;
+  color:#3f7447;
+}
+
+.stat span{
+  font-size:10px;
+  color:#7b887f;
+}
+
+/* ================= INPUT ================= */
+
+.input-group{
+  display:flex;
+  gap:8px;
+  margin-bottom:12px;
+}
+
+input,
+textarea{
+  width:100%;
+  border:1px solid #dce8de;
+  border-radius:12px;
+  padding:12px;
+  outline:none;
+  font-size:13px;
+  background:#fbfdfb;
+}
+
+textarea{
+  min-height:90px;
+  resize:vertical;
+}
+
+input:focus,
+textarea:focus{
+  border-color:#76aa7d;
+}
+
+.btn{
+  border:0;
+  border-radius:12px;
+  padding:11px 14px;
+  background:#4f8f5b;
+  color:white;
+  font-size:12px;
+  font-weight:bold;
+}
+
+.btn:active{
+  transform:scale(.97);
+}
+
+.btn-secondary{
+  background:#e6f1e7;
+  color:#3f7047;
+}
+
+.btn-danger{
+  background:#f8e5e3;
+  color:#a44f46;
+}
+
+/* ================= TASK ================= */
+
+.task-item{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:12px;
+  background:#f8fbf8;
+  border-radius:13px;
+  margin-bottom:8px;
+  border:1px solid #edf3ed;
+}
+
+.task-item input[type="checkbox"]{
+  width:18px;
+  height:18px;
+}
+
+.task-content{
+  flex:1;
+}
+
+.task-content strong{
+  font-size:13px;
+  display:block;
+}
+
+.task-content small{
+  font-size:10px;
+  color:#849087;
+}
+
+.completed{
+  text-decoration:line-through;
+  opacity:.55;
+}
+
+/* ================= BREAKDOWN ================= */
+
+.step-list{
+  margin-top:12px;
+}
+
+.step-item{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  padding:9px;
+  background:#f6faf6;
+  border-radius:10px;
+  margin-bottom:6px;
+  font-size:12px;
+}
+
+/* ================= PRIORITY ================= */
+
+.priority-item{
+  background:#f8fbf8;
+  padding:13px;
+  border-radius:14px;
+  margin-bottom:10px;
+  border:1px solid #edf3ed;
+}
+
+.priority-title{
+  font-size:13px;
+  font-weight:bold;
+  margin-bottom:9px;
+}
+
+.priority-buttons{
+  display:grid;
+  grid-template-columns:1fr 1fr 1fr;
+  gap:6px;
+}
+
+.priority-buttons button{
+  border:0;
+  padding:8px 4px;
+  border-radius:9px;
+  font-size:9px;
+}
+
+.red{
+  background:#f7dddd;
+  color:#9d3f3f;
+}
+
+.yellow{
+  background:#f8efcf;
+  color:#896e22;
+}
+
+.green{
+  background:#dcefdc;
+  color:#417047;
+}
+
+/* ================= MISSION ================= */
+
+.mission-item{
+  display:flex;
+  align-items:center;
+  gap:9px;
+  background:#f8fbf8;
+  padding:12px;
+  border-radius:13px;
+  margin-bottom:8px;
+  border:1px solid #edf3ed;
+}
+
+.mission-item input{
+  width:18px;
+}
+
+.mission-text{
+  flex:1;
+  font-size:12px;
+}
+
+.mission-done{
+  text-decoration:line-through;
+  opacity:.5;
+}
+
+/* ================= REFLECTION ================= */
+
+.reflection-question{
+  font-size:13px;
+  font-weight:bold;
+  color:#3c5d42;
+  margin:13px 0 7px;
+}
+
+.saved-reflection{
+  background:#f0f8f0;
+  padding:12px;
+  border-radius:12px;
+  margin-top:12px;
+  font-size:12px;
+  line-height:1.6;
+}
+
+/* ================= EMPTY ================= */
+
+.empty{
+  text-align:center;
+  padding:20px 10px;
+  color:#89968d;
+  font-size:12px;
+}
+
+
+/* ================= LEARN & MOTIVATION & EVALUATION ================= */
+
+.info-card{
+  background:#f8fbf8;
+  border:1px solid #e5eee6;
+  border-radius:16px;
+  padding:14px;
+  margin-bottom:10px;
+}
+
+.info-card h3{
+  font-size:14px;
+  color:#315c39;
+  margin-bottom:6px;
+}
+
+.info-card p{
+  font-size:12px;
+  line-height:1.6;
+  color:#647268;
+}
+
+.tip-box{
+  background:linear-gradient(135deg,#edf8ed,#f8fbef);
+  border:1px solid #dcebdc;
+  border-radius:18px;
+  padding:18px;
+  min-height:145px;
+}
+
+.tip-number{
+  font-size:11px;
+  color:#6b846f;
+  margin-bottom:8px;
+  font-weight:bold;
+}
+
+.tip-box h3{
+  font-size:16px;
+  color:#315c39;
+  margin-bottom:8px;
+}
+
+.tip-box p{
+  font-size:13px;
+  color:#657269;
+  line-height:1.6;
+}
+
+.eval-question{
+  font-size:13px;
+  font-weight:bold;
+  color:#3c5d42;
+  margin:14px 0 8px;
+  line-height:1.5;
+}
+
+.scale-row{
+  display:grid;
+  grid-template-columns:repeat(5,1fr);
+  gap:6px;
+}
+
+.scale-option{
+  position:relative;
+}
+
+.scale-option input{
+  position:absolute;
+  opacity:0;
+  pointer-events:none;
+}
+
+.scale-option label{
+  display:block;
+  text-align:center;
+  padding:9px 3px;
+  border-radius:10px;
+  background:#f1f6f1;
+  color:#607066;
+  font-size:11px;
+  border:1px solid #e1ebe2;
+  cursor:pointer;
+}
+
+.scale-option input:checked + label{
+  background:#dcefdc;
+  color:#315c39;
+  border-color:#9bc59f;
+  font-weight:bold;
+}
+
+.choice-list{
+  display:grid;
+  gap:7px;
+}
+
+.choice-option{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  background:#f8fbf8;
+  border:1px solid #e4ece5;
+  border-radius:11px;
+  padding:10px;
+  font-size:12px;
+  color:#5d6d63;
+}
+
+.choice-option input{
+  width:auto;
+}
+
+.form-note{
+  background:#fff8e8;
+  border:1px solid #f0e2b9;
+  color:#79672d;
+  padding:11px;
+  border-radius:12px;
+  font-size:11px;
+  line-height:1.5;
+  margin-top:10px;
+}
+
+.google-btn{
+  width:100%;
+  margin-top:10px;
+  background:#4f8f5b;
+}
+
+/* ================= BOTTOM NAV ================= */
+
+.bottom-nav{
+  position:fixed;
+  bottom:0;
+  left:50%;
+  transform:translateX(-50%);
+  width:100%;
+  max-width:480px;
+  background:rgba(255,255,255,.96);
+  backdrop-filter:blur(10px);
+  border-top:1px solid #e7eee8;
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  padding:8px 8px 10px;
+  z-index:100;
+}
+
+.nav-btn{
+  border:0;
+  background:transparent;
+  color:#89958d;
+  padding:6px 2px;
+  border-radius:13px;
+  font-size:10px;
+}
+
+.nav-icon{
+  display:block;
+  font-size:20px;
+  margin-bottom:3px;
+}
+
+.nav-btn.active{
+  color:#43804c;
+  background:#edf7ee;
+  font-weight:bold;
+}
+
+/* ================= DESKTOP ================= */
+
+@media(min-width:700px){
+  body{
+    padding:20px 0;
+  }
+
+  .app{
+    min-height:calc(100vh - 40px);
+    border-radius:25px;
+    overflow:hidden;
+    box-shadow:0 10px 40px rgba(40,70,45,.12);
+  }
+
+  .bottom-nav{
+    bottom:20px;
+    border-radius:18px;
+    width:480px;
+    border:1px solid #e2ebe3;
+    box-shadow:0 5px 20px rgba(40,70,45,.1);
+  }
+}
+</style>
+
+  <meta name="theme-color" content="#9b85cf">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Task Garden">
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="icon-192.png">
+
+<style id="step11-pwa-style">
+  .pwa-status{
+    margin:10px 0 0;
+    padding:9px 12px;
+    border-radius:12px;
+    background:#f4f8f4;
+    color:#45634a;
+    font-size:12px;
+    text-align:center;
+    border:1px solid #e2ebe3;
+  }
+  .pwa-install{
+    display:none;
+    width:100%;
+    margin-top:10px;
+  }
+  .pwa-install.show{display:block;}
+  .offline-badge{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    margin-top:8px;
+    padding:5px 9px;
+    border-radius:999px;
+    background:#edf7ee;
+    color:#3c6742;
+    font-size:11px;
+    font-weight:600;
+  }
+  .offline-badge.offline{
+    background:#fff7e8;
+    color:#8a641f;
+  }
+  @media(max-width:699px){
+    .app{min-height:100dvh;}
+    .header{padding-top:max(14px, env(safe-area-inset-top));}
+    .bottom-nav{
+      padding-bottom:max(8px, env(safe-area-inset-bottom));
+    }
+    input, textarea, button, select{font-size:16px;}
+  }
+
+
+/* =========================================================
+   TASK GARDEN — SOFT PASTEL FINAL LOOK
+   Visual-only layer: keeps existing features and JS intact.
+   ========================================================= */
+:root{
+  --tg-bg:#faf7ff;
+  --tg-surface:#ffffff;
+  --tg-lav:#9b85cf;
+  --tg-lav-dark:#66538f;
+  --tg-pink:#f3b6cf;
+  --tg-peach:#f3b39f;
+  --tg-blue:#b9d7f2;
+  --tg-mint:#b9dcc8;
+  --tg-yellow:#f5d99a;
+  --tg-text:#4d465b;
+  --tg-muted:#81798e;
+  --tg-border:#eee7f5;
+}
+
+html,body{
+  background:linear-gradient(180deg,#f7f2fb 0%,#fbf9ff 52%,#f4f8fc 100%) !important;
+  color:var(--tg-text) !important;
+}
+
+body{
+  font-family:"Trebuchet MS",Arial,Helvetica,sans-serif !important;
+}
+
+.app{
+  background:#fbfaff !important;
+  box-shadow:0 0 38px rgba(104,82,143,.12) !important;
+}
+
+.header{
+  background:linear-gradient(135deg,#8f78c5 0%,#b18fd5 48%,#efb5cf 100%) !important;
+  border-radius:0 0 30px 30px !important;
+  box-shadow:0 7px 22px rgba(105,83,145,.16) !important;
+}
+
+.header::after{
+  background:rgba(255,255,255,.16) !important;
+  box-shadow:-70px 65px 0 25px rgba(255,255,255,.06) !important;
+}
+
+.logo-icon{
+  background:rgba(255,255,255,.22) !important;
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.14);
+}
+
+.today{
+  background:rgba(255,255,255,.20) !important;
+}
+
+.user-greeting .name{letter-spacing:-.6px;}
+.name-edit{background:rgba(255,255,255,.22) !important;}
+
+.page-title h2{color:var(--tg-lav-dark) !important;}
+.page-title p{color:var(--tg-muted) !important;}
+
+.card{
+  background:rgba(255,255,255,.96) !important;
+  border:1px solid var(--tg-border) !important;
+  box-shadow:0 7px 20px rgba(94,76,120,.065) !important;
+  border-radius:22px !important;
+}
+
+.card-title{color:var(--tg-lav-dark) !important;}
+.card-desc{color:var(--tg-muted) !important;}
+
+.welcome{
+  background:linear-gradient(135deg,#f4eafa 0%,#fff1f5 55%,#fff6ed 100%) !important;
+  border:1px solid #eadcf2 !important;
+}
+.welcome h2{color:#69548f !important;}
+.welcome p{color:#71687d !important;}
+.welcome::after{content:"🌸" !important;opacity:.20 !important;}
+
+.quick-grid{gap:13px !important;}
+.quick-card{
+  background:linear-gradient(145deg,#fff 0%,#fbf8ff 100%) !important;
+  border:1px solid #eee7f5 !important;
+  box-shadow:0 6px 16px rgba(104,83,140,.07) !important;
+}
+.quick-card:nth-child(1){background:linear-gradient(145deg,#fff,#f2edff) !important;}
+.quick-card:nth-child(2){background:linear-gradient(145deg,#fff,#fff0ea) !important;}
+.quick-card:nth-child(3){background:linear-gradient(145deg,#fff,#edf6ff) !important;}
+.quick-card:nth-child(4){background:linear-gradient(145deg,#fff,#fff8df) !important;}
+.quick-card:nth-child(5){background:linear-gradient(145deg,#fff,#edf9f2) !important;}
+.quick-card:nth-child(6){background:linear-gradient(145deg,#fff,#fff0f6) !important;}
+.quick-card strong{color:#5d5075 !important;}
+.quick-card span{color:#8b8296 !important;}
+.quick-icon{filter:saturate(.9);}
+
+.garden-card{
+  background:linear-gradient(135deg,#eaf8f1 0%,#edf7ff 55%,#f6edff 100%) !important;
+  border:1px solid #dceee7 !important;
+  box-shadow:0 8px 22px rgba(90,119,103,.08) !important;
+}
+.garden-card::after{content:"🌷" !important;opacity:.17 !important;}
+.progress-number{color:#5f8c7a !important;}
+.progress-label{color:#788c83 !important;}
+.progress-bar{background:#dfeee7 !important;}
+.progress-fill{background:linear-gradient(90deg,#9bcfb4,#9b85cf) !important;}
+
+.stat{
+  background:#fbf9ff !important;
+  border:1px solid #eee8f5 !important;
+}
+.stat strong{color:#5d5075 !important;}
+.stat span{color:#8a8194 !important;}
+
+.task-item,.mission-item{
+  background:#fbfaff !important;
+  border:1px solid #eee8f4 !important;
+}
+.task-item.completed{background:#f2f8f4 !important;}
+
+.priority-item{
+  background:#fff !important;
+  border-color:#eee7f4 !important;
+}
+.priority-title{color:#665a77 !important;}
+
+.step-item{
+  background:linear-gradient(135deg,#fff,#faf6ff) !important;
+  border-color:#eee7f5 !important;
+}
+
+.info-card{
+  background:linear-gradient(135deg,#fff7fb,#f8f3ff) !important;
+  border:1px solid #ecdff1 !important;
+}
+.info-card h3{color:#69548f !important;}
+.info-card p{color:#756c80 !important;}
+
+.tip-box{
+  background:linear-gradient(135deg,#f1ebff 0%,#fff0f6 52%,#fff6ea 100%) !important;
+  border:1px solid #eadcf1 !important;
+}
+.tip-number{color:#8a70b2 !important;}
+.tip-box h3{color:#675287 !important;}
+.tip-box p{color:#71687d !important;}
+
+.btn{
+  background:linear-gradient(135deg,#8f78c5,#aa88cf) !important;
+  box-shadow:0 5px 13px rgba(123,97,164,.16) !important;
+  border-radius:14px !important;
+}
+.btn-secondary,.google-btn{
+  background:#eee8fa !important;
+  color:#69558d !important;
+  box-shadow:none !important;
+}
+.btn-danger{background:#fae6e8 !important;color:#a45b69 !important;}
+
+.input-group label,.reflection-question,.eval-question{color:#655b74 !important;}
+input,textarea,select{
+  border-color:#e7deef !important;
+  background:#fff !important;
+  color:#4e475a !important;
+}
+input:focus,textarea:focus,select:focus{
+  border-color:#a48bd0 !important;
+  box-shadow:0 0 0 3px rgba(164,139,208,.14) !important;
+}
+
+.choice-option label,.scale-option label{
+  border-color:#e7deef !important;
+  background:#fff !important;
+  color:#665d72 !important;
+}
+.choice-option input:checked + label,
+.scale-option input:checked + label{
+  background:#eee8fa !important;
+  border-color:#a48bd0 !important;
+  color:#66518a !important;
+}
+
+.saved-reflection{
+  background:#f0f8f4 !important;
+  border-color:#dcece4 !important;
+  color:#5f806e !important;
+}
+.form-note{background:#fff8e9 !important;border-color:#f2e2ba !important;}
+
+.pwa-status{color:#7c7484 !important;}
+.pwa-install{background:linear-gradient(135deg,#f1e7fb,#fceaf2) !important;color:#6c588e !important;}
+
+.offline-badge{background:#fff6df !important;color:#8d6f28 !important;}
+
+.name-overlay{background:rgba(62,45,80,.50) !important;}
+.name-modal{
+  background:linear-gradient(145deg,#fff,#fbf6ff) !important;
+  box-shadow:0 24px 65px rgba(57,39,76,.28) !important;
+}
+.name-plant{background:linear-gradient(135deg,#efe6fb,#fff0f5) !important;}
+.name-modal h2{color:#66518a !important;}
+.name-modal p{color:#7b7283 !important;}
+.name-modal input{border-color:#e5daef !important;color:#4f465d !important;}
+.name-modal input:focus{border-color:#a48bd0 !important;box-shadow:0 0 0 3px rgba(164,139,208,.13) !important;}
+.name-note{color:#9a92a0 !important;}
+
+.bottom-nav{
+  background:rgba(255,255,255,.92) !important;
+  border-top-color:#ebe3f2 !important;
+  box-shadow:0 8px 24px rgba(83,65,111,.12) !important;
+  backdrop-filter:blur(14px) !important;
+  -webkit-backdrop-filter:blur(14px) !important;
+  grid-template-columns:repeat(6,1fr) !important;
+  border-radius:20px !important;
+}
+.nav-btn{color:#978da1 !important;border-radius:13px !important;}
+.nav-btn.active{color:#715c9a !important;background:#f1eafb !important;}
+.nav-icon{font-size:18px !important;}
+
+/* Small pastel status accents already present in the app */
+.green{color:#65967d !important;}
+.yellow{color:#a27f2e !important;}
+.red{color:#ad626c !important;}
+
+@media(max-width:699px){
+  .bottom-nav{border-radius:18px !important;}
+  .nav-btn{font-size:9px !important;padding:6px 0 !important;}
+  .nav-icon{display:block !important;margin-bottom:2px !important;}
+}
+
+</style>
+
+</head>
+
+<body>
+
+<!-- ================= USER NAME ================= -->
+<div class="name-overlay hidden" id="nameOverlay" aria-hidden="true">
+  <div class="name-modal" role="dialog" aria-modal="true" aria-labelledby="nameModalTitle">
+    <div class="name-plant">🌱</div>
+    <h2 id="nameModalTitle">Kenalan dulu, yuk! 👋</h2>
+    <p>Masukkan namamu supaya Task Garden bisa menyapamu secara personal.</p>
+    <input id="userNameInput" type="text" maxlength="30" autocomplete="name" placeholder="Contoh: Sifa">
+    <button class="btn" type="button" onclick="saveUserName()">Mulai Berkebun 🌷</button>
+    <p class="name-note">Nama disimpan hanya di perangkat ini.</p>
+  </div>
+</div>
+
+<div class="app">
+
+<!-- ================= HEADER ================= -->
+
+<header class="header">
+  <div class="header-top">
+    <div class="logo">
+      <div class="logo-icon">🌱</div>
+      <div>
+        <h1>Task Garden</h1>
+        <p>Tumbuhkan Kebiasaan, Selesaikan Tugas</p>
+      </div>
+    </div>
+
+    <div class="today" id="todayText">Hari ini</div>
+  </div>
+
+  <div class="user-greeting">
+    <div class="hello">Selamat datang kembali 👋</div>
+    <div class="name" id="headerUserName">Teman Task Garden</div>
+    <button class="name-edit" type="button" onclick="changeUserName()">✏️ Ganti nama</button>
+  </div>
+</header>
+
+
+<!-- ================= HOME ================= -->
+
+<section class="page active" id="homePage">
+
+  <div class="welcome card">
+    <h2 id="welcomeUserTitle">Halo! 🌱</h2>
+    <p>
+      Selamat datang di Task Garden. Kelola tugas, tentukan prioritas,
+      pecah tugas menjadi langkah kecil, dan refleksikan kebiasaan belajarmu.
+    </p>
+  </div>
+
+
+  <div class="card">
+    <div class="card-title">📱 Task Garden</div>
+    <div class="card-desc">
+      Bisa digunakan seperti aplikasi dan tetap membantu saat koneksi sedang tidak stabil.
+    </div>
+    <div id="pwaStatus" class="pwa-status">Menyiapkan mode aplikasi…</div>
+    <button id="installButton" class="btn pwa-install" type="button">📲 Tambahkan ke Layar Utama</button>
+  </div>
+
+  <div class="garden-card">
+    <div class="garden-head">
+      <div>
+        <div class="progress-number" id="homeProgress">0%</div>
+        <div class="progress-label">Progress kebunmu</div>
+      </div>
+      <div class="garden-icon">🌱</div>
+    </div>
+
+    <div class="progress-bar">
+      <div class="progress-fill" id="homeProgressBar"></div>
+    </div>
+  </div>
+
+  <div class="stats">
+    <div class="stat">
+      <strong id="homeTotalTasks">0</strong>
+      <span>Total Task</span>
+    </div>
+
+    <div class="stat">
+      <strong id="homeCompletedTasks">0</strong>
+      <span>Selesai</span>
+    </div>
+
+    <div class="stat">
+      <strong id="homeMissionCount">0</strong>
+      <span>Mission</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Menu Cepat</div>
+    <div class="card-desc">
+      Pilih fitur yang ingin kamu gunakan.
+    </div>
+
+    <div class="quick-grid">
+
+      <button class="quick-card" onclick="showPage('tasksPage')">
+        <div class="quick-icon">✓</div>
+        <strong>My Tasks</strong>
+        <span>Kelola tugas kuliah</span>
+      </button>
+
+      <button class="quick-card" onclick="showPage('tasksPage'); setTimeout(()=>document.getElementById('breakdownInput').focus(),100)">
+        <div class="quick-icon">🧩</div>
+        <strong>Break It Down</strong>
+        <span>Pecah tugas besar</span>
+      </button>
+
+      <button class="quick-card" onclick="showPage('tasksPage'); setTimeout(()=>document.getElementById('priorityInput').focus(),100)">
+        <div class="quick-icon">🎯</div>
+        <strong>Priority</strong>
+        <span>Tentukan prioritas</span>
+      </button>
+
+      <button class="quick-card" onclick="showPage('gardenPage')">
+        <div class="quick-icon">🌿</div>
+        <strong>Garden</strong>
+        <span>Lihat perkembangan</span>
+      </button>
+
+      <button class="quick-card" onclick="showPage('reflectPage')">
+        <div class="quick-icon">💭</div>
+        <strong>Reflection</strong>
+        <span>Evaluasi kebiasaan</span>
+      </button>
+
+      <button class="quick-card" onclick="showPage('learnPage')">
+        <div class="quick-icon">📚</div>
+        <strong>Learn</strong>
+        <span>Pelajari manajemen waktu</span>
+      </button>
+
+      <button class="quick-card" onclick="showPage('tipsPage')">
+        <div class="quick-icon">💡</div>
+        <strong>Motivation & Tips</strong>
+        <span>Tips agar lebih konsisten</span>
+      </button>
+
+      <button class="quick-card" onclick="showPage('evaluationPage')">
+        <div class="quick-icon">📝</div>
+        <strong>Evaluasi</strong>
+        <span>Evaluasi penggunaan Task Garden</span>
+      </button>
+
+    </div>
+  </div>
+
+</section>
+
+
+<!-- ================= TASKS ================= -->
+
+<section class="page" id="tasksPage">
+
+  <div class="page-title">
+    <h2>📋 Tasks</h2>
+    <p>Atur tugasmu sedikit demi sedikit.</p>
+  </div>
+
+
+  <!-- MY TASKS -->
+
+  <div class="card">
+    <div class="card-title">My Tasks</div>
+    <div class="card-desc">
+      Tambahkan tugas yang ingin kamu kerjakan.
+    </div>
+
+    <div class="input-group">
+      <input
+        type="text"
+        id="taskInput"
+        placeholder="Contoh: Membuat makalah BK"
+        onkeydown="if(event.key==='Enter') addTask()"
+      >
+
+      <button class="btn" onclick="addTask()">Tambah</button>
+    </div>
+
+    <div id="taskList"></div>
+  </div>
+
+
+  <!-- BREAK IT DOWN -->
+
+  <div class="card">
+    <div class="card-title">🧩 Break It Down</div>
+    <div class="card-desc">
+      Ubah tugas besar menjadi beberapa langkah kecil agar lebih mudah dimulai.
+    </div>
+
+    <div class="input-group">
+      <input
+        type="text"
+        id="breakdownInput"
+        placeholder="Contoh: Membuat makalah"
+        onkeydown="if(event.key==='Enter') createBreakdown()"
+      >
+
+      <button class="btn" onclick="createBreakdown()">Buat</button>
+    </div>
+
+    <div id="breakdownResult"></div>
+  </div>
+
+
+  <!-- PRIORITY -->
+
+  <div class="card">
+    <div class="card-title">🎯 Priority Check</div>
+    <div class="card-desc">
+      Tentukan tingkat prioritas setiap tugas yang kamu masukkan.
+    </div>
+
+    <div class="input-group">
+      <input
+        type="text"
+        id="priorityInput"
+        placeholder="Contoh: Deadline tugas besok"
+        onkeydown="if(event.key==='Enter') addPriorityTask()"
+      >
+
+      <button class="btn" onclick="addPriorityTask()">Tambah</button>
+    </div>
+
+    <div id="priorityList"></div>
+  </div>
+
+</section>
+
+
+<!-- ================= GARDEN ================= -->
+
+<section class="page" id="gardenPage">
+
+  <div class="page-title">
+    <h2>🌱 Garden</h2>
+    <p>Setiap langkah kecil membantu kebunmu tumbuh.</p>
+  </div>
+
+
+  <!-- GARDEN PROGRESS -->
+
+  <div class="garden-card">
+    <div class="garden-head">
+
+      <div>
+        <div class="progress-number" id="gardenProgress">0%</div>
+        <div class="progress-label">Task yang sudah selesai</div>
+      </div>
+
+      <div class="garden-icon" id="gardenEmoji">🌱</div>
+
+    </div>
+
+    <div class="progress-bar">
+      <div class="progress-fill" id="gardenProgressBar"></div>
+    </div>
+
+    <div
+      style="font-size:12px;color:#66756a;margin-top:12px;line-height:1.5;"
+      id="gardenMessage"
+    >
+      Mulai dari satu langkah kecil hari ini.
+    </div>
+  </div>
+
+
+  <!-- DAILY MISSION -->
+
+  <div class="card">
+    <div class="card-title">🌿 Daily Mission</div>
+    <div class="card-desc">
+      Tambahkan beberapa target kecil yang ingin kamu lakukan hari ini.
+    </div>
+
+    <div class="input-group">
+      <input
+        type="text"
+        id="missionInput"
+        placeholder="Contoh: Membaca 10 halaman"
+        onkeydown="if(event.key==='Enter') addMission()"
+      >
+
+      <button class="btn" onclick="addMission()">Tambah</button>
+    </div>
+
+    <div id="missionList"></div>
+  </div>
+
+</section>
+
+
+<!-- ================= REFLECT ================= -->
+
+<section class="page" id="reflectPage">
+
+  <div class="page-title">
+    <h2>💭 Reflection</h2>
+    <p>Kenali kebiasaanmu dan tentukan langkah berikutnya.</p>
+  </div>
+
+  <div class="card">
+
+    <div class="card-title">Refleksi Minggu Ini</div>
+
+    <div class="reflection-question">
+      1. Kebiasaan apa yang ingin kamu perbaiki?
+    </div>
+
+    <textarea
+      id="reflectionHabit"
+      placeholder="Contoh: Saya ingin mengurangi kebiasaan menunda tugas."
+    ></textarea>
+
+
+    <div class="reflection-question">
+      2. Apa yang biasanya menghambatmu?
+    </div>
+
+    <textarea
+      id="reflectionObstacle"
+      placeholder="Contoh: Terlalu sering membuka media sosial."
+    ></textarea>
+
+
+    <div class="reflection-question">
+      3. Strategi apa yang ingin kamu coba?
+    </div>
+
+    <textarea
+      id="reflectionStrategy"
+      placeholder="Contoh: Membuat daftar prioritas setiap pagi."
+    ></textarea>
+
+
+    <div class="reflection-question">
+      4. Apa manfaat yang kamu harapkan?
+    </div>
+
+    <textarea
+      id="reflectionBenefit"
+      placeholder="Contoh: Tugas lebih cepat selesai dan saya tidak terlalu terburu-buru."
+    ></textarea>
+
+    <button
+      class="btn"
+      style="width:100%;margin-top:12px;"
+      onclick="saveReflection()"
+    >
+      💾 Simpan Reflection
+    </button>
+
+    <div id="savedReflection"></div>
+
+  </div>
+
+</section>
+
+
+
+<!-- ================= LEARN ================= -->
+<section class="page" id="learnPage">
+
+  <div class="page-title">
+    <h2>📚 Learn</h2>
+    <p>Pelajari dasar manajemen waktu dengan bahasa sederhana.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">🌱 Materi Manajemen Waktu</div>
+    <div class="card-desc">Gunakan materi ini sebagai panduan sebelum mengatur tugasmu.</div>
+
+    <div class="info-card">
+      <h3>1. Apa itu manajemen waktu?</h3>
+      <p>Manajemen waktu adalah kemampuan mengatur waktu dan kegiatan agar tugas, belajar, istirahat, dan kegiatan lainnya dapat berjalan dengan lebih terarah.</p>
+    </div>
+
+    <div class="info-card">
+      <h3>2. Mengapa manajemen waktu penting?</h3>
+      <p>Pengelolaan waktu yang baik membantu kita mengetahui apa yang perlu dilakukan, mengurangi pekerjaan yang menumpuk, dan memberi ruang untuk istirahat.</p>
+    </div>
+
+    <div class="info-card">
+      <h3>3. Tentukan prioritas</h3>
+      <p>Tidak semua tugas harus dikerjakan pada saat yang sama. Tentukan tugas yang paling penting atau memiliki batas waktu lebih dekat, lalu kerjakan terlebih dahulu.</p>
+    </div>
+
+    <div class="info-card">
+      <h3>4. Pecah tugas besar menjadi langkah kecil</h3>
+      <p>Tugas yang terlihat besar dapat terasa lebih ringan jika dibagi menjadi beberapa langkah sederhana. Mulailah dari satu langkah yang paling mudah dilakukan.</p>
+    </div>
+
+    <div class="info-card">
+      <h3>5. Jangan terus menunda untuk mulai</h3>
+      <p>Kita tidak harus menunggu sampai merasa benar-benar siap. Cobalah memulai dari beberapa menit atau satu langkah kecil agar tugas tidak semakin terasa berat.</p>
+    </div>
+
+    <div class="info-card">
+      <h3>6. Evaluasi penggunaan waktu</h3>
+      <p>Luangkan waktu untuk melihat apa yang sudah berjalan baik dan apa yang masih menghambat. Dari sana, kamu dapat menentukan strategi yang lebih sesuai untuk berikutnya.</p>
+    </div>
+  </div>
+</section>
+
+
+<!-- ================= MOTIVATION & TIPS ================= -->
+<section class="page" id="tipsPage">
+
+  <div class="page-title">
+    <h2>💡 Motivation & Tips</h2>
+    <p>Pengingat kecil untuk membantu kamu tetap berjalan.</p>
+  </div>
+
+  <div class="card">
+    <div class="tip-box">
+      <div class="tip-number" id="tipNumber">TIP 1</div>
+      <h3 id="tipTitle">Mulai dari satu langkah kecil</h3>
+      <p id="tipText">Kamu tidak harus menyelesaikan semuanya sekaligus. Pilih satu langkah yang bisa dilakukan sekarang.</p>
+    </div>
+
+    <button class="btn google-btn" style="margin-top:14px;background:#e6f1e7;color:#3f7047;" onclick="nextTip()">
+      💡 Tip Berikutnya
+    </button>
+  </div>
+
+  <div class="card">
+    <div class="card-title">🌿 Ingat</div>
+    <div class="card-desc">
+      Konsisten tidak berarti harus sempurna setiap hari. Yang penting adalah terus mencoba menumbuhkan kebiasaan yang lebih baik.
+    </div>
+  </div>
+</section>
+
+
+<!-- ================= EVALUATION ================= -->
+<section class="page" id="evaluationPage">
+
+  <div class="page-title">
+    <h2>📝 Evaluasi</h2>
+    <p>Refleksikan pengalamanmu menggunakan Task Garden.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Evaluasi Penggunaan Task Garden</div>
+    <div class="card-desc">
+      Pilih angka 1–5 sesuai dengan pengalamanmu. Evaluasi ini tersimpan di perangkat dan juga dapat dikirim melalui Google Form untuk Guru BK.
+    </div>
+
+    <div class="eval-question">1. Saya lebih memahami pentingnya manajemen waktu dalam kegiatan belajar.</div>
+    <div class="scale-row">
+      <div class="scale-option"><input type="radio" name="eval1" id="eval1_1" value="1"><label for="eval1_1">1</label></div>
+      <div class="scale-option"><input type="radio" name="eval1" id="eval1_2" value="2"><label for="eval1_2">2</label></div>
+      <div class="scale-option"><input type="radio" name="eval1" id="eval1_3" value="3"><label for="eval1_3">3</label></div>
+      <div class="scale-option"><input type="radio" name="eval1" id="eval1_4" value="4"><label for="eval1_4">4</label></div>
+      <div class="scale-option"><input type="radio" name="eval1" id="eval1_5" value="5"><label for="eval1_5">5</label></div>
+    </div>
+
+    <div class="eval-question">2. Task Garden membantu saya menentukan tugas yang perlu diprioritaskan.</div>
+    <div class="scale-row">
+      <div class="scale-option"><input type="radio" name="eval2" id="eval2_1" value="1"><label for="eval2_1">1</label></div>
+      <div class="scale-option"><input type="radio" name="eval2" id="eval2_2" value="2"><label for="eval2_2">2</label></div>
+      <div class="scale-option"><input type="radio" name="eval2" id="eval2_3" value="3"><label for="eval2_3">3</label></div>
+      <div class="scale-option"><input type="radio" name="eval2" id="eval2_4" value="4"><label for="eval2_4">4</label></div>
+      <div class="scale-option"><input type="radio" name="eval2" id="eval2_5" value="5"><label for="eval2_5">5</label></div>
+    </div>
+
+    <div class="eval-question">3. Fitur Break It Down membantu saya memecah tugas besar menjadi langkah-langkah yang lebih kecil.</div>
+    <div class="scale-row">
+      <div class="scale-option"><input type="radio" name="eval3" id="eval3_1" value="1"><label for="eval3_1">1</label></div>
+      <div class="scale-option"><input type="radio" name="eval3" id="eval3_2" value="2"><label for="eval3_2">2</label></div>
+      <div class="scale-option"><input type="radio" name="eval3" id="eval3_3" value="3"><label for="eval3_3">3</label></div>
+      <div class="scale-option"><input type="radio" name="eval3" id="eval3_4" value="4"><label for="eval3_4">4</label></div>
+      <div class="scale-option"><input type="radio" name="eval3" id="eval3_5" value="5"><label for="eval3_5">5</label></div>
+    </div>
+
+    <div class="eval-question">4. Setelah menggunakan Task Garden, saya lebih terdorong untuk mulai mengerjakan tugas dan mengurangi kebiasaan menunda.</div>
+    <div class="scale-row">
+      <div class="scale-option"><input type="radio" name="eval4" id="eval4_1" value="1"><label for="eval4_1">1</label></div>
+      <div class="scale-option"><input type="radio" name="eval4" id="eval4_2" value="2"><label for="eval4_2">2</label></div>
+      <div class="scale-option"><input type="radio" name="eval4" id="eval4_3" value="3"><label for="eval4_3">3</label></div>
+      <div class="scale-option"><input type="radio" name="eval4" id="eval4_4" value="4"><label for="eval4_4">4</label></div>
+      <div class="scale-option"><input type="radio" name="eval4" id="eval4_5" value="5"><label for="eval4_5">5</label></div>
+    </div>
+
+    <div class="eval-question">5. Task Garden bermanfaat sebagai media pendukung layanan Bimbingan dan Konseling.</div>
+    <div class="scale-row">
+      <div class="scale-option"><input type="radio" name="eval5" id="eval5_1" value="1"><label for="eval5_1">1</label></div>
+      <div class="scale-option"><input type="radio" name="eval5" id="eval5_2" value="2"><label for="eval5_2">2</label></div>
+      <div class="scale-option"><input type="radio" name="eval5" id="eval5_3" value="3"><label for="eval5_3">3</label></div>
+      <div class="scale-option"><input type="radio" name="eval5" id="eval5_4" value="4"><label for="eval5_4">4</label></div>
+      <div class="scale-option"><input type="radio" name="eval5" id="eval5_5" value="5"><label for="eval5_5">5</label></div>
+    </div>
+
+    <div class="eval-question">Fitur Task Garden mana yang paling membantu kamu?</div>
+    <div class="choice-list">
+      <label class="choice-option"><input type="radio" name="evalFeature" value="My Tasks"> My Tasks</label>
+      <label class="choice-option"><input type="radio" name="evalFeature" value="Break It Down"> Break It Down</label>
+      <label class="choice-option"><input type="radio" name="evalFeature" value="Priority Check"> Priority Check</label>
+      <label class="choice-option"><input type="radio" name="evalFeature" value="Daily Mission"> Daily Mission</label>
+      <label class="choice-option"><input type="radio" name="evalFeature" value="Learn"> Learn</label>
+      <label class="choice-option"><input type="radio" name="evalFeature" value="Motivation & Tips"> Motivation & Tips</label>
+      <label class="choice-option"><input type="radio" name="evalFeature" value="Reflection"> Reflection</label>
+    </div>
+
+    <div class="eval-question">Apa kesulitan yang masih kamu rasakan dalam mengatur waktu atau menyelesaikan tugas?</div>
+    <textarea id="evalDifficulty" placeholder="Tulis jawabanmu di sini..."></textarea>
+
+    <div class="eval-question">Menurut kamu, dukungan atau layanan BK apa yang masih kamu butuhkan terkait belajar dan manajemen waktu?</div>
+    <textarea id="evalNeed" placeholder="Tulis jawabanmu di sini..."></textarea>
+
+    <div class="eval-question">Apa saran kamu untuk pengembangan Task Garden agar lebih membantu?</div>
+    <textarea id="evalSuggestion" placeholder="Tulis saranmu di sini..."></textarea>
+
+    <button class="btn" style="width:100%;margin-top:12px;" onclick="saveEvaluation()">💾 Simpan Evaluasi di Perangkat</button>
+
+    <div id="savedEvaluation" class="saved-reflection"></div>
+
+    <div class="form-note">
+      📋 Untuk mengirim evaluasi resmi kepada Guru BK, gunakan tombol di bawah. Jawaban yang dikirim melalui Google Form akan tercatat di Google Sheets yang terhubung dengan form.
+    </div>
+
+    <button class="btn google-btn" onclick="openGoogleEvaluation()">
+      📋 Isi/Kirim Evaluasi ke Guru BK
+    </button>
+  </div>
+</section>
+
+<!-- ================= BOTTOM NAV ================= -->
+
+<nav class="bottom-nav">
+
+  <button class="nav-btn active" id="navHome" onclick="showPage('homePage')">
+    <span class="nav-icon">⌂</span>Home
+  </button>
+
+  <button class="nav-btn" id="navTasks" onclick="showPage('tasksPage')">
+    <span class="nav-icon">✓</span>Tasks
+  </button>
+
+  <button class="nav-btn" id="navLearn" onclick="showPage('learnPage')">
+    <span class="nav-icon">📚</span>Learn
+  </button>
+
+  <button class="nav-btn" id="navGarden" onclick="showPage('gardenPage')">
+    <span class="nav-icon">🌱</span>Garden
+  </button>
+
+  <button class="nav-btn" id="navReflect" onclick="showPage('reflectPage')">
+    <span class="nav-icon">💭</span>Reflect
+  </button>
+
+  <button class="nav-btn" id="navEvaluation" onclick="showPage('evaluationPage')">
+    <span class="nav-icon">📝</span>Evaluasi
+  </button>
+
+</nav>
+
+</div>
+
+
+<script>
+
+/* =========================================================
+   NAVIGATION
+========================================================= */
+
+function showPage(pageId){
+
+  const pages = document.querySelectorAll('.page');
+
+  pages.forEach(page=>{
+    page.classList.remove('active');
+  });
+
+  const selected = document.getElementById(pageId);
+
+  if(selected){
+    selected.classList.add('active');
+  }
+
+  const navButtons = document.querySelectorAll('.nav-btn');
+
+  navButtons.forEach(btn=>{
+    btn.classList.remove('active');
+  });
+
+  if(pageId === 'homePage'){
+    document.getElementById('navHome').classList.add('active');
+  }
+
+  if(pageId === 'tasksPage'){
+    document.getElementById('navTasks').classList.add('active');
+  }
+
+  if(pageId === 'gardenPage'){
+    document.getElementById('navGarden').classList.add('active');
+  }
+
+
+  if(pageId === 'learnPage'){
+    document.getElementById('navLearn').classList.add('active');
+  }
+
+  if(pageId === 'tipsPage'){
+    // Tips is opened from Home and does not have a dedicated bottom-nav item.
+  }
+
+  if(pageId === 'evaluationPage'){
+    document.getElementById('navEvaluation').classList.add('active');
+  }
+
+  if(pageId === 'reflectPage'){
+    document.getElementById('navReflect').classList.add('active');
+  }
+
+  window.scrollTo({
+    top:0,
+    behavior:'smooth'
+  });
+
+  updateHomeStats();
+}
+
+
+/* =========================================================
+   USER NAME
+========================================================= */
+
+function cleanUserName(name){
+  return name.replace(/\s+/g,' ').trim().slice(0,30);
+}
+
+function updateUserNameUI(){
+  const name = localStorage.getItem('taskGardenUserName') || '';
+  const safeName = name || 'Teman Task Garden';
+  const headerName = document.getElementById('headerUserName');
+  const welcomeTitle = document.getElementById('welcomeUserTitle');
+
+  if(headerName) headerName.textContent = name ? safeName : 'Teman Task Garden';
+  if(welcomeTitle) welcomeTitle.textContent = name ? `Halo, ${safeName}! 👋` : 'Halo! 🌱';
+}
+
+function openNameModal(){
+  const overlay = document.getElementById('nameOverlay');
+  const input = document.getElementById('userNameInput');
+  if(!overlay || !input) return;
+
+  input.value = localStorage.getItem('taskGardenUserName') || '';
+  overlay.classList.remove('hidden');
+  overlay.setAttribute('aria-hidden','false');
+  setTimeout(()=>input.focus(),80);
+}
+
+function closeNameModal(){
+  const overlay = document.getElementById('nameOverlay');
+  if(!overlay) return;
+  overlay.classList.add('hidden');
+  overlay.setAttribute('aria-hidden','true');
+}
+
+function saveUserName(){
+  const input = document.getElementById('userNameInput');
+  if(!input) return;
+
+  const name = cleanUserName(input.value);
+  if(!name){
+    input.focus();
+    alert('Masukkan nama dulu ya. 🌱');
+    return;
+  }
+
+  localStorage.setItem('taskGardenUserName', name);
+  updateUserNameUI();
+  closeNameModal();
+}
+
+function changeUserName(){
+  openNameModal();
+}
+
+function initUserName(){
+  updateUserNameUI();
+
+  const savedName = localStorage.getItem('taskGardenUserName');
+  if(!savedName){
+    openNameModal();
+  }
+
+  const input = document.getElementById('userNameInput');
+  if(input){
+    input.addEventListener('keydown',(event)=>{
+      if(event.key === 'Enter') saveUserName();
+    });
+  }
+}
+
+
+/* =========================================================
+   DATE
+========================================================= */
+
+function updateDate(){
+
+  const date = new Date();
+
+  const options = {
+    day:'numeric',
+    month:'short'
+  };
+
+  document.getElementById('todayText').textContent =
+    date.toLocaleDateString('id-ID',options);
+
+}
+
+
+/* =========================================================
+   MY TASKS
+========================================================= */
+
+let tasks =
+  JSON.parse(localStorage.getItem('taskGardenTasks')) || [];
+
+
+function saveTasks(){
+
+  localStorage.setItem(
+    'taskGardenTasks',
+    JSON.stringify(tasks)
+  );
+
+}
+
+
+function addTask(){
+
+  const input =
+    document.getElementById('taskInput');
+
+  const value =
+    input.value.trim();
+
+  if(!value){
+    return;
+  }
+
+  tasks.push({
+    id:Date.now(),
+    title:value,
+    completed:false
+  });
+
+  saveTasks();
+
+  input.value='';
+
+  displayTasks();
+  updateGarden();
+  updateHomeStats();
+
+}
+
+
+function toggleTask(id){
+
+  const task =
+    tasks.find(item=>item.id===id);
+
+  if(!task){
+    return;
+  }
+
+  task.completed =
+    !task.completed;
+
+  saveTasks();
+
+  displayTasks();
+  updateGarden();
+  updateHomeStats();
+
+}
+
+
+function deleteTask(id){
+
+  tasks =
+    tasks.filter(item=>item.id!==id);
+
+  saveTasks();
+
+  displayTasks();
+  updateGarden();
+  updateHomeStats();
+
+}
+
+
+function displayTasks(){
+
+  const list =
+    document.getElementById('taskList');
+
+  if(tasks.length===0){
+
+    list.innerHTML =
+      '<div class="empty">Belum ada tugas. Tambahkan tugas pertamamu 🌱</div>';
+
+    return;
+  }
+
+  list.innerHTML =
+    tasks.map(task=>`
+
+      <div class="task-item">
+
+        <input
+          type="checkbox"
+          ${task.completed?'checked':''}
+          onchange="toggleTask(${task.id})"
+        >
+
+        <div class="task-content ${task.completed?'completed':''}">
+          <strong>${escapeHTML(task.title)}</strong>
+          <small>
+            ${task.completed?'Sudah selesai ✓':'Belum selesai'}
+          </small>
+        </div>
+
+        <button
+          class="btn btn-danger"
+          style="padding:7px 9px;"
+          onclick="deleteTask(${task.id})"
+        >
+          ×
+        </button>
+
+      </div>
+
+    `).join('');
+
+}
+
+
+/* =========================================================
+   BREAK IT DOWN
+========================================================= */
+
+let breakdownData =
+  JSON.parse(localStorage.getItem('taskGardenBreakdown')) || null;
+
+
+function createBreakdown(){
+
+  const input =
+    document.getElementById('breakdownInput');
+
+  const value =
+    input.value.trim();
+
+  if(!value){
+    return;
+  }
+
+  breakdownData = {
+    title:value,
+    steps:[]
+  };
+
+  localStorage.setItem(
+    'taskGardenBreakdown',
+    JSON.stringify(breakdownData)
+  );
+
+  input.value='';
+
+  displayBreakdown();
+
+}
+
+
+function addStep(){
+
+  if(!breakdownData){
+    return;
+  }
+
+  const input =
+    document.getElementById('stepInput');
+
+  const value =
+    input.value.trim();
+
+  if(!value){
+    return;
+  }
+
+  breakdownData.steps.push({
+    id:Date.now(),
+    text:value,
+    completed:false
+  });
+
+  localStorage.setItem(
+    'taskGardenBreakdown',
+    JSON.stringify(breakdownData)
+  );
+
+  input.value='';
+
+  displayBreakdown();
+
+}
+
+
+function toggleStep(id){
+
+  if(!breakdownData){
+    return;
+  }
+
+  const step =
+    breakdownData.steps.find(item=>item.id===id);
+
+  if(step){
+    step.completed =
+      !step.completed;
+  }
+
+  localStorage.setItem(
+    'taskGardenBreakdown',
+    JSON.stringify(breakdownData)
+  );
+
+  displayBreakdown();
+
+}
+
+
+function displayBreakdown(){
+
+  const result =
+    document.getElementById('breakdownResult');
+
+  if(!breakdownData){
+
+    result.innerHTML='';
+    return;
+  }
+
+  result.innerHTML = `
+
+    <div
+      style="
+        background:#edf7ee;
+        padding:12px;
+        border-radius:13px;
+        margin-top:8px;
+      "
+    >
+
+      <strong
+        style="
+          font-size:13px;
+          color:#3c6742;
+        "
+      >
+        ${escapeHTML(breakdownData.title)}
+      </strong>
+
+      <div class="step-list">
+
+        ${
+          breakdownData.steps.length===0
+          ?
+          '<div class="empty">Belum ada langkah.</div>'
+          :
+          breakdownData.steps.map(step=>`
+
+            <div class="step-item">
+
+              <input
+                type="checkbox"
+                ${step.completed?'checked':''}
+                onchange="toggleStep(${step.id})"
+              >
+
+              <span
+                style="
+                  ${step.completed?'text-decoration:line-through;opacity:.5;':''}
+                "
+              >
+                ${escapeHTML(step.text)}
+              </span>
+
+            </div>
+
+          `).join('')
+        }
+
+      </div>
+
+      <div class="input-group" style="margin-top:10px;margin-bottom:0;">
+
+        <input
+          type="text"
+          id="stepInput"
+          placeholder="Tambahkan langkah kecil..."
+          onkeydown="if(event.key==='Enter') addStep()"
+        >
+
+        <button
+          class="btn"
+          onclick="addStep()"
+        >
+          +
+        </button>
+
+      </div>
+
+    </div>
+
+  `;
+
+}
+
+
+/* =========================================================
+   PRIORITY CHECK
+========================================================= */
+
+let priorityTasks =
+  JSON.parse(
+    localStorage.getItem('taskGardenPriorityTasks')
+  ) || [];
+
+
+function savePriorityTasks(){
+
+  localStorage.setItem(
+    'taskGardenPriorityTasks',
+    JSON.stringify(priorityTasks)
+  );
+
+}
+
+
+function addPriorityTask(){
+
+  const input =
+    document.getElementById('priorityInput');
+
+  const value =
+    input.value.trim();
+
+  if(!value){
+    return;
+  }
+
+  priorityTasks.push({
+    id:Date.now(),
+    title:value,
+    priority:''
+  });
+
+  savePriorityTasks();
+
+  input.value='';
+
+  displayPriority();
+
+}
+
+
+function setPriority(id,priority){
+
+  const task =
+    priorityTasks.find(item=>item.id===id);
+
+  if(!task){
+    return;
+  }
+
+  task.priority =
+    priority;
+
+  savePriorityTasks();
+
+  displayPriority();
+
+}
+
+
+function deletePriorityTask(id){
+
+  priorityTasks =
+    priorityTasks.filter(
+      item=>item.id!==id
+    );
+
+  savePriorityTasks();
+
+  displayPriority();
+
+}
+
+
+function displayPriority(){
+
+  const list =
+    document.getElementById('priorityList');
+
+  if(priorityTasks.length===0){
+
+    list.innerHTML =
+      '<div class="empty">Belum ada tugas untuk diprioritaskan.</div>';
+
+    return;
+  }
+
+  list.innerHTML =
+    priorityTasks.map(task=>`
+
+      <div class="priority-item">
+
+        <div class="priority-title">
+          ${escapeHTML(task.title)}
+        </div>
+
+        <div class="priority-buttons">
+
+          <button
+            class="red"
+            onclick="setPriority(${task.id},'Penting & Mendesak')"
+          >
+            🔴 Penting<br>& Mendesak
+          </button>
+
+          <button
+            class="yellow"
+            onclick="setPriority(${task.id},'Penting tapi Tidak Mendesak')"
+          >
+            🟡 Penting tapi<br>Tidak Mendesak
+          </button>
+
+          <button
+            class="green"
+            onclick="setPriority(${task.id},'Prioritas Lebih Rendah')"
+          >
+            🟢 Prioritas<br>Lebih Rendah
+          </button>
+
+        </div>
+
+        ${
+          task.priority
+          ?
+          `
+          <div
+            style="
+              margin-top:9px;
+              font-size:11px;
+              color:#4d7253;
+              background:#edf7ee;
+              padding:7px;
+              border-radius:8px;
+            "
+          >
+            Prioritas: ${escapeHTML(task.priority)}
+          </div>
+          `
+          :
+          ''
+        }
+
+        <button
+          class="btn btn-danger"
+          style="
+            margin-top:9px;
+            width:100%;
+            padding:8px;
+          "
+          onclick="deletePriorityTask(${task.id})"
+        >
+          Hapus
+        </button>
+
+      </div>
+
+    `).join('');
+
+}
+
+
+/* =========================================================
+   DAILY MISSION
+========================================================= */
+
+let missions =
+  JSON.parse(
+    localStorage.getItem('taskGardenMissions')
+  ) || [];
+
+
+function saveMissions(){
+
+  localStorage.setItem(
+    'taskGardenMissions',
+    JSON.stringify(missions)
+  );
+
+}
+
+
+function addMission(){
+
+  const input =
+    document.getElementById('missionInput');
+
+  const value =
+    input.value.trim();
+
+  if(!value){
+    return;
+  }
+
+  missions.push({
+    id:Date.now(),
+    title:value,
+    completed:false
+  });
+
+  saveMissions();
+
+  input.value='';
+
+  displayMissions();
+  updateHomeStats();
+
+}
+
+
+function toggleMission(id){
+
+  const mission =
+    missions.find(item=>item.id===id);
+
+  if(!mission){
+    return;
+  }
+
+  mission.completed =
+    !mission.completed;
+
+  saveMissions();
+
+  displayMissions();
+  updateHomeStats();
+
+}
+
+
+function deleteMission(id){
+
+  missions =
+    missions.filter(
+      item=>item.id!==id
+    );
+
+  saveMissions();
+
+  displayMissions();
+  updateHomeStats();
+
+}
+
+
+function displayMissions(){
+
+  const list =
+    document.getElementById('missionList');
+
+  if(missions.length===0){
+
+    list.innerHTML =
+      '<div class="empty">Belum ada mission hari ini 🌱</div>';
+
+    return;
+  }
+
+  list.innerHTML =
+    missions.map(mission=>`
+
+      <div class="mission-item">
+
+        <input
+          type="checkbox"
+          ${mission.completed?'checked':''}
+          onchange="toggleMission(${mission.id})"
+        >
+
+        <div
+          class="mission-text ${mission.completed?'mission-done':''}"
+        >
+          ${escapeHTML(mission.title)}
+        </div>
+
+        <button
+          class="btn btn-danger"
+          style="padding:6px 9px;"
+          onclick="deleteMission(${mission.id})"
+        >
+          ×
+        </button>
+
+      </div>
+
+    `).join('');
+
+}
+
+
+/* =========================================================
+   GARDEN PROGRESS
+========================================================= */
+
+function updateGarden(){
+
+  const total =
+    tasks.length;
+
+  const completed =
+    tasks.filter(
+      task=>task.completed
+    ).length;
+
+  let progress = 0;
+
+  if(total>0){
+    progress =
+      Math.round(
+        (completed/total)*100
+      );
+  }
+
+  document.getElementById('gardenProgress').textContent =
+    progress + '%';
+
+  document.getElementById('gardenProgressBar').style.width =
+    progress + '%';
+
+
+  const emoji =
+    document.getElementById('gardenEmoji');
+
+  const message =
+    document.getElementById('gardenMessage');
+
+
+  if(progress===0){
+
+    emoji.textContent='🌱';
+
+    message.textContent =
+      'Mulai dari satu langkah kecil hari ini.';
+
+  }else if(progress<30){
+
+    emoji.textContent='🌿';
+
+    message.textContent =
+      'Kebunmu mulai tumbuh. Teruskan sedikit demi sedikit!';
+
+  }else if(progress<70){
+
+    emoji.textContent='🌳';
+
+    message.textContent =
+      'Bagus! Kebiasaanmu mulai menunjukkan perkembangan.';
+
+  }else if(progress<100){
+
+    emoji.textContent='🌳';
+
+    message.textContent =
+      'Hebat! Tinggal beberapa langkah lagi.';
+
+  }else{
+
+    emoji.textContent='🌸';
+
+    message.textContent =
+      'Semua tugas selesai. Kebunmu tumbuh dengan baik!';
+
+  }
+
+
+  document.getElementById('homeProgress').textContent =
+    progress + '%';
+
+  document.getElementById('homeProgressBar').style.width =
+    progress + '%';
+
+}
+
+
+/* =========================================================
+   HOME STATS
+========================================================= */
+
+function updateHomeStats(){
+
+  const total =
+    tasks.length;
+
+  const completed =
+    tasks.filter(
+      task=>task.completed
+    ).length;
+
+  document.getElementById(
+    'homeTotalTasks'
+  ).textContent = total;
+
+  document.getElementById(
+    'homeCompletedTasks'
+  ).textContent = completed;
+
+  document.getElementById(
+    'homeMissionCount'
+  ).textContent = missions.length;
+
+}
+
+
+/* =========================================================
+   REFLECTION
+========================================================= */
+
+let reflection =
+  JSON.parse(
+    localStorage.getItem('taskGardenReflection')
+  ) || null;
+
+
+function saveReflection(){
+
+  reflection = {
+
+    habit:
+      document.getElementById(
+        'reflectionHabit'
+      ).value.trim(),
+
+    obstacle:
+      document.getElementById(
+        'reflectionObstacle'
+      ).value.trim(),
+
+    strategy:
+      document.getElementById(
+        'reflectionStrategy'
+      ).value.trim(),
+
+    benefit:
+      document.getElementById(
+        'reflectionBenefit'
+      ).value.trim(),
+
+    savedAt:
+      new Date().toLocaleString('id-ID')
+
+  };
+
+
+  localStorage.setItem(
+    'taskGardenReflection',
+    JSON.stringify(reflection)
+  );
+
+
+  displayReflection();
+
+  alert('Reflection berhasil disimpan 🌱');
+
+}
+
+
+function displayReflection(){
+
+  const container =
+    document.getElementById(
+      'savedReflection'
+    );
+
+  if(!reflection){
+    container.innerHTML='';
+    return;
+  }
+
+
+  document.getElementById(
+    'reflectionHabit'
+  ).value =
+    reflection.habit || '';
+
+  document.getElementById(
+    'reflectionObstacle'
+  ).value =
+    reflection.obstacle || '';
+
+  document.getElementById(
+    'reflectionStrategy'
+  ).value =
+    reflection.strategy || '';
+
+  document.getElementById(
+    'reflectionBenefit'
+  ).value =
+    reflection.benefit || '';
+
+
+  container.innerHTML = `
+
+    <div class="saved-reflection">
+
+      <strong>🌱 Reflection tersimpan</strong>
+
+      <br><br>
+
+      <strong>Kebiasaan:</strong><br>
+      ${escapeHTML(reflection.habit || '-')}
+
+      <br><br>
+
+      <strong>Hambatan:</strong><br>
+      ${escapeHTML(reflection.obstacle || '-')}
+
+      <br><br>
+
+      <strong>Strategi:</strong><br>
+      ${escapeHTML(reflection.strategy || '-')}
+
+      <br><br>
+
+      <strong>Manfaat:</strong><br>
+      ${escapeHTML(reflection.benefit || '-')}
+
+      <br><br>
+
+      <small>
+        Disimpan: ${escapeHTML(reflection.savedAt || '')}
+      </small>
+
+    </div>
+
+  `;
+
+}
+
+
+/* =========================================================
+   SECURITY / TEXT
+========================================================= */
+
+function escapeHTML(text){
+
+  return String(text)
+    .replace(/&/g,'&amp;')
+    .replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;')
+    .replace(/'/g,'&#039;');
+
+}
+
+
+/* =========================================================
+   INITIAL LOAD
+========================================================= */
+
+document.addEventListener(
+  'DOMContentLoaded',
+  function(){
+
+    updateDate();
+
+    displayTasks();
+
+    displayBreakdown();
+
+    displayPriority();
+
+    displayMissions();
+
+    displayReflection();
+
+    updateGarden();
+
+    updateHomeStats();
+
+  }
+);
+
+
+/* =========================================================
+   LEARN / TIPS / EVALUATION
+========================================================= */
+
+const tips = [
+  {
+    title:'Mulai dari satu langkah kecil',
+    text:'Kamu tidak harus menyelesaikan semuanya sekaligus. Pilih satu langkah yang bisa dilakukan sekarang.'
+  },
+  {
+    title:'Tugas besar bisa dibuat lebih ringan',
+    text:'Pecah tugas menjadi bagian kecil. Satu langkah yang selesai tetap merupakan sebuah kemajuan.'
+  },
+  {
+    title:'Prioritas bukan berarti melakukan semuanya',
+    text:'Pilih hal yang paling penting untuk dikerjakan terlebih dahulu. Sisanya bisa mengikuti setelahnya.'
+  },
+  {
+    title:'Jangan menunggu mood sempurna',
+    text:'Kadang motivasi muncul setelah kita mulai. Cobalah mulai sebentar tanpa menuntut diri harus langsung sempurna.'
+  },
+  {
+    title:'Istirahat juga bagian dari manajemen waktu',
+    text:'Mengatur waktu bukan hanya tentang produktif. Tubuh dan pikiran juga membutuhkan waktu untuk beristirahat.'
+  },
+  {
+    title:'Tidak apa-apa jika hari ini belum sempurna',
+    text:'Kalau rencana tidak berjalan sesuai harapan, evaluasi lalu coba lagi. Kemajuan kecil tetap berarti.'
+  }
+];
+
+let currentTip = 0;
+
+function displayTip(){
+  const number = document.getElementById('tipNumber');
+  const title = document.getElementById('tipTitle');
+  const text = document.getElementById('tipText');
+
+  if(!number || !title || !text) return;
+
+  number.textContent = 'TIP ' + (currentTip + 1);
+  title.textContent = tips[currentTip].title;
+  text.textContent = tips[currentTip].text;
+}
+
+function nextTip(){
+  currentTip = (currentTip + 1) % tips.length;
+  displayTip();
+}
+
+function saveEvaluation(){
+  const values = {};
+
+  for(let i=1;i<=5;i++){
+    const selected = document.querySelector('input[name="eval'+i+'"]:checked');
+    values['q'+i] = selected ? selected.value : '';
+  }
+
+  const feature = document.querySelector('input[name="evalFeature"]:checked');
+
+  const data = {
+    ...values,
+    feature: feature ? feature.value : '',
+    difficulty: document.getElementById('evalDifficulty').value.trim(),
+    need: document.getElementById('evalNeed').value.trim(),
+    suggestion: document.getElementById('evalSuggestion').value.trim(),
+    savedAt: new Date().toLocaleString('id-ID')
+  };
+
+  localStorage.setItem('taskGardenEvaluation', JSON.stringify(data));
+  displayEvaluation();
+
+  alert('Evaluasi tersimpan di perangkat. 🌱');
+}
+
+function displayEvaluation(){
+  const saved = JSON.parse(localStorage.getItem('taskGardenEvaluation'));
+
+  const box = document.getElementById('savedEvaluation');
+
+  if(!box) return;
+
+  if(!saved){
+    box.innerHTML = '';
+    return;
+  }
+
+  box.innerHTML =
+    '<strong>✓ Evaluasi terakhir tersimpan</strong><br>' +
+    '<span style="font-size:11px;color:#718077;">Disimpan: ' +
+    saved.savedAt + '</span>';
+}
+
+function openGoogleEvaluation(){
+  window.open(
+    'https://docs.google.com/forms/d/e/1FAIpQLScVnGK4ekC8FmCCsh0jeYlp7W3KKlJesyDIHAXyhCt2TW-6Yg/viewform?usp=header',
+    '_blank'
+  );
+}
+
+
+</script>
+
+
+<script>
+(function(){
+  let deferredInstallPrompt = null;
+
+  function updateOnlineStatus(){
+    const el = document.getElementById('pwaStatus');
+    if(!el) return;
+    if(navigator.onLine){
+      el.innerHTML = '🟢 Online · Data tugas tersimpan di perangkat.';
+      el.classList.remove('offline');
+    }else{
+      el.innerHTML = '🟡 Offline · Fitur utama Task Garden tetap bisa digunakan.';
+      el.classList.add('offline');
+    }
+  }
+
+  window.addEventListener('online', updateOnlineStatus);
+  window.addEventListener('offline', updateOnlineStatus);
+
+  window.addEventListener('beforeinstallprompt', (event)=>{
+    event.preventDefault();
+    deferredInstallPrompt = event;
+    const button = document.getElementById('installButton');
+    if(button) button.classList.add('show');
+  });
+
+  window.addEventListener('appinstalled', ()=>{
+    deferredInstallPrompt = null;
+    const button = document.getElementById('installButton');
+    if(button) button.classList.remove('show');
+    const el = document.getElementById('pwaStatus');
+    if(el) el.innerHTML = '✅ Task Garden sudah ditambahkan sebagai aplikasi.';
+  });
+
+  document.addEventListener('DOMContentLoaded', ()=>{
+    updateOnlineStatus();
+
+    const button = document.getElementById('installButton');
+    if(button){
+      button.addEventListener('click', async ()=>{
+        if(!deferredInstallPrompt){
+          alert('Jika tombol instalasi belum muncul, gunakan menu browser lalu pilih “Tambahkan ke layar utama” atau “Install app”.');
+          return;
+        }
+        deferredInstallPrompt.prompt();
+        await deferredInstallPrompt.userChoice;
+        deferredInstallPrompt = null;
+        button.classList.remove('show');
+      });
+    }
+
+    if('serviceWorker' in navigator){
+      navigator.serviceWorker.register('./sw.js').catch(()=>{});
+    }
+  });
+})();
+initUserName();
+</script>
+
+</body>
+</html>
