@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Task Garden 🌱</title>
+<title>TemanTumbuh 🌱</title>
 
 <style>
 *{
@@ -853,7 +853,7 @@ textarea:focus{
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
-  <meta name="apple-mobile-web-app-title" content="Task Garden">
+  <meta name="apple-mobile-web-app-title" content="TemanTumbuh">
   <link rel="manifest" href="manifest.json">
   <link rel="apple-touch-icon" href="icon-192.png">
 
@@ -1128,6 +1128,31 @@ input:focus,textarea:focus,select:focus{
 
 </style>
 
+
+<style id="temantumbuh-revision">
+:root{--tt-lav:#a895d5;--tt-ink:#514766;--tt-muted:#827a91;--tt-line:#eee7f5;--tt-mint:#d9eee2;--tt-pink:#f8e0eb}
+.field-label{display:block;font-size:12px;font-weight:700;color:#6b5b86;margin:10px 0 6px}
+#plannerPage input,#plannerPage select{width:100%;border:1px solid var(--tt-line);border-radius:13px;padding:12px;background:#fff;color:var(--tt-ink);font:inherit;font-size:14px;min-width:0}
+.planner-fields{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.study-plan-list{margin-top:14px;display:grid;gap:9px}
+.study-plan-item{padding:13px;border:1px solid #eee6f5;background:linear-gradient(135deg,#fff,#fcf8ff);border-radius:15px;display:flex;gap:10px;align-items:flex-start}
+.study-plan-item.done{opacity:.68;background:#f4faf6}
+.study-plan-item.done .plan-name{text-decoration:line-through}
+.plan-check{width:20px;height:20px;accent-color:#9279c5;flex-shrink:0;margin-top:2px}
+.plan-main{flex:1;min-width:0}.plan-name{font-size:13px;font-weight:700;overflow-wrap:anywhere;color:#514766}.plan-meta{font-size:11px;color:#898096;margin-top:5px;line-height:1.5}
+.plan-delete{border:0;background:#f8e9ef;color:#a15f7a;border-radius:9px;padding:6px 8px;font-size:12px}
+.empty-plans{font-size:12px;color:#91889e;text-align:center;padding:18px 8px;border:1px dashed #e4dced;border-radius:14px}
+.focus-card{background:linear-gradient(145deg,#f5efff,#fff5f8);border-color:#eee4f8}
+.timer-face{font-size:48px;letter-spacing:2px;font-weight:800;text-align:center;color:#7864a8;padding:12px 0 2px;font-variant-numeric:tabular-nums}
+.timer-caption{text-align:center;font-size:12px;color:#81758f;margin-bottom:14px}
+.timer-actions{display:flex;gap:9px}.timer-actions .btn{flex:1;margin:0}.btn-soft{background:#f2eafa!important;color:#6e5a94!important}
+.gentle-note{background:linear-gradient(135deg,#fff4f8,#f7f2ff)}.gentle-note strong{color:#775f9c;font-size:14px}.gentle-note p{color:#80758e;font-size:12px;line-height:1.6;margin-top:7px}
+.bottom-nav{grid-template-columns:repeat(7,minmax(0,1fr))!important;padding-left:4px!important;padding-right:4px!important}
+.nav-btn{font-size:9px!important;min-width:0;white-space:nowrap}
+.nav-icon{font-size:17px!important}
+@media(max-width:360px){.nav-btn{font-size:8px!important}.nav-icon{font-size:15px!important}.timer-face{font-size:42px}}
+</style>
+
 </head>
 
 <body>
@@ -1137,7 +1162,7 @@ input:focus,textarea:focus,select:focus{
   <div class="name-modal" role="dialog" aria-modal="true" aria-labelledby="nameModalTitle">
     <div class="name-plant">🌱</div>
     <h2 id="nameModalTitle">Kenalan dulu, yuk! 👋</h2>
-    <p>Masukkan namamu supaya Task Garden bisa menyapamu secara personal.</p>
+    <p>Masukkan namamu supaya TemanTumbuh bisa menyapamu secara personal.</p>
     <input id="userNameInput" type="text" maxlength="30" autocomplete="name" placeholder="Contoh: Sifa">
     <button class="btn" type="button" onclick="saveUserName()">Mulai Berkebun 🌷</button>
     <p class="name-note">Nama disimpan hanya di perangkat ini.</p>
@@ -1153,8 +1178,8 @@ input:focus,textarea:focus,select:focus{
     <div class="logo">
       <div class="logo-icon">🌱</div>
       <div>
-        <h1>Task Garden</h1>
-        <p>Tumbuhkan Kebiasaan, Selesaikan Tugas</p>
+        <h1>TemanTumbuh</h1>
+        <p>Tumbuh Teratur, Belajar Lebih Baik</p>
       </div>
     </div>
 
@@ -1163,7 +1188,7 @@ input:focus,textarea:focus,select:focus{
 
   <div class="user-greeting">
     <div class="hello">Selamat datang kembali 👋</div>
-    <div class="name" id="headerUserName">Teman Task Garden</div>
+    <div class="name" id="headerUserName">Teman TemanTumbuh</div>
     <button class="name-edit" type="button" onclick="changeUserName()">✏️ Ganti nama</button>
   </div>
 </header>
@@ -1176,14 +1201,14 @@ input:focus,textarea:focus,select:focus{
   <div class="welcome card">
     <h2 id="welcomeUserTitle">Halo! 🌱</h2>
     <p>
-      Selamat datang di Task Garden. Kelola tugas, tentukan prioritas,
+      Selamat datang di TemanTumbuh. Atur waktu, tentukan prioritas,
       pecah tugas menjadi langkah kecil, dan refleksikan kebiasaan belajarmu.
     </p>
   </div>
 
 
   <div class="card">
-    <div class="card-title">📱 Task Garden</div>
+    <div class="card-title">📱 TemanTumbuh</div>
     <div class="card-desc">
       Bisa digunakan seperti aplikasi dan tetap membantu saat koneksi sedang tidak stabil.
     </div>
@@ -1195,7 +1220,7 @@ input:focus,textarea:focus,select:focus{
     <div class="garden-head">
       <div>
         <div class="progress-number" id="homeProgress">0%</div>
-        <div class="progress-label">Progress kebunmu</div>
+        <div class="progress-label">Progres belajarmu</div>
       </div>
       <div class="garden-icon">🌱</div>
     </div>
@@ -1208,7 +1233,7 @@ input:focus,textarea:focus,select:focus{
   <div class="stats">
     <div class="stat">
       <strong id="homeTotalTasks">0</strong>
-      <span>Total Task</span>
+      <span>Total Tugas</span>
     </div>
 
     <div class="stat">
@@ -1217,8 +1242,8 @@ input:focus,textarea:focus,select:focus{
     </div>
 
     <div class="stat">
-      <strong id="homeMissionCount">0</strong>
-      <span>Mission</span>
+      <strong id="homeTargetCount">0</strong>
+      <span>Target</span>
     </div>
   </div>
 
@@ -1232,7 +1257,7 @@ input:focus,textarea:focus,select:focus{
 
       <button class="quick-card" onclick="showPage('tasksPage')">
         <div class="quick-icon">✓</div>
-        <strong>My Tasks</strong>
+        <strong>Daftar Tugas</strong>
         <span>Kelola tugas kuliah</span>
       </button>
 
@@ -1275,7 +1300,7 @@ input:focus,textarea:focus,select:focus{
       <button class="quick-card" onclick="showPage('evaluationPage')">
         <div class="quick-icon">📝</div>
         <strong>Evaluasi</strong>
-        <span>Evaluasi penggunaan Task Garden</span>
+        <span>Evaluasi penggunaan TemanTumbuh</span>
       </button>
 
     </div>
@@ -1289,7 +1314,7 @@ input:focus,textarea:focus,select:focus{
 <section class="page" id="tasksPage">
 
   <div class="page-title">
-    <h2>📋 Tasks</h2>
+    <h2>📋 Tugas Saya</h2>
     <p>Atur tugasmu sedikit demi sedikit.</p>
   </div>
 
@@ -1297,7 +1322,7 @@ input:focus,textarea:focus,select:focus{
   <!-- MY TASKS -->
 
   <div class="card">
-    <div class="card-title">My Tasks</div>
+    <div class="card-title">Daftar Tugas</div>
     <div class="card-desc">
       Tambahkan tugas yang ingin kamu kerjakan.
     </div>
@@ -1365,12 +1390,41 @@ input:focus,textarea:focus,select:focus{
 </section>
 
 
+<!-- ================= RENCANA BELAJAR ================= -->
+<section class="page" id="plannerPage">
+  <div class="page-title">
+    <h2>🗓️ Rencana Belajar</h2>
+    <p>Susun langkah yang realistis agar tugas tidak menumpuk di akhir.</p>
+  </div>
+  <div class="card">
+    <div class="card-title">✨ Susun rencana kecil</div>
+    <div class="card-desc">Tulis satu kegiatan belajar, tentukan tenggat, lalu pilih durasi yang masuk akal.</div>
+    <label class="field-label" for="planTitle">Kegiatan atau tugas</label>
+    <input id="planTitle" maxlength="100" placeholder="Contoh: Membaca materi untuk UTS">
+    <div class="planner-fields">
+      <div><label class="field-label" for="planDate">Tanggal target</label><input id="planDate" type="date"></div>
+      <div><label class="field-label" for="planMinutes">Durasi (menit)</label><select id="planMinutes"><option value="15">15 menit</option><option value="25" selected>25 menit</option><option value="45">45 menit</option><option value="60">60 menit</option><option value="90">90 menit</option></select></div>
+    </div>
+    <button class="btn" style="width:100%;margin-top:12px" onclick="addStudyPlan()">＋ Simpan Rencana</button>
+    <div id="studyPlanList" class="study-plan-list"></div>
+  </div>
+  <div class="card focus-card">
+    <div class="card-title">⏳ Teman Fokus</div>
+    <div class="card-desc">Mulai sebentar dulu. Fokus 25 menit dapat membantu tugas terasa lebih ringan.</div>
+    <div class="timer-face" id="focusTimer">25:00</div>
+    <div class="timer-caption" id="focusTimerStatus">Siap untuk satu sesi fokus?</div>
+    <div class="timer-actions"><button class="btn" id="focusStartBtn" onclick="toggleFocusTimer()">▶ Mulai fokus</button><button class="btn btn-soft" onclick="resetFocusTimer()">↺ Ulangi</button></div>
+    <p class="card-desc" style="margin:12px 0 0">Setelah fokus, ambil jeda singkat. Kamu boleh menyesuaikan cara belajar dengan kebutuhanmu.</p>
+  </div>
+  <div class="card gentle-note"><strong>🌷 Ingat, progres tidak harus sempurna.</strong><p>Jika terasa berat, pecah tugas menjadi bagian yang lebih kecil dan mulai dari bagian yang paling mudah.</p></div>
+</section>
+
 <!-- ================= GARDEN ================= -->
 
 <section class="page" id="gardenPage">
 
   <div class="page-title">
-    <h2>🌱 Garden</h2>
+    <h2>🌱 Progres Belajar</h2>
     <p>Setiap langkah kecil membantu kebunmu tumbuh.</p>
   </div>
 
@@ -1405,7 +1459,7 @@ input:focus,textarea:focus,select:focus{
   <!-- DAILY MISSION -->
 
   <div class="card">
-    <div class="card-title">🌿 Daily Mission</div>
+    <div class="card-title">🌿 Daily Target</div>
     <div class="card-desc">
       Tambahkan beberapa target kecil yang ingin kamu lakukan hari ini.
     </div>
@@ -1415,10 +1469,10 @@ input:focus,textarea:focus,select:focus{
         type="text"
         id="missionInput"
         placeholder="Contoh: Membaca 10 halaman"
-        onkeydown="if(event.key==='Enter') addMission()"
+        onkeydown="if(event.key==='Enter') addTarget()"
       >
 
-      <button class="btn" onclick="addMission()">Tambah</button>
+      <button class="btn" onclick="addTarget()">Tambah</button>
     </div>
 
     <div id="missionList"></div>
@@ -1432,7 +1486,7 @@ input:focus,textarea:focus,select:focus{
 <section class="page" id="reflectPage">
 
   <div class="page-title">
-    <h2>💭 Reflection</h2>
+    <h2>💭 Refleksi Diri</h2>
     <p>Kenali kebiasaanmu dan tentukan langkah berikutnya.</p>
   </div>
 
@@ -1499,7 +1553,7 @@ input:focus,textarea:focus,select:focus{
 <section class="page" id="learnPage">
 
   <div class="page-title">
-    <h2>📚 Learn</h2>
+    <h2>📚 Ruang Belajar</h2>
     <p>Pelajari dasar manajemen waktu dengan bahasa sederhana.</p>
   </div>
 
@@ -1574,11 +1628,11 @@ input:focus,textarea:focus,select:focus{
 
   <div class="page-title">
     <h2>📝 Evaluasi</h2>
-    <p>Refleksikan pengalamanmu menggunakan Task Garden.</p>
+    <p>Refleksikan pengalamanmu menggunakan TemanTumbuh.</p>
   </div>
 
   <div class="card">
-    <div class="card-title">Evaluasi Penggunaan Task Garden</div>
+    <div class="card-title">Evaluasi Penggunaan TemanTumbuh</div>
     <div class="card-desc">
       Pilih angka 1–5 sesuai dengan pengalamanmu. Evaluasi ini tersimpan di perangkat dan juga dapat dikirim melalui Google Form untuk Guru BK.
     </div>
@@ -1592,7 +1646,7 @@ input:focus,textarea:focus,select:focus{
       <div class="scale-option"><input type="radio" name="eval1" id="eval1_5" value="5"><label for="eval1_5">5</label></div>
     </div>
 
-    <div class="eval-question">2. Task Garden membantu saya menentukan tugas yang perlu diprioritaskan.</div>
+    <div class="eval-question">2. TemanTumbuh membantu saya menentukan tugas yang perlu diprioritaskan.</div>
     <div class="scale-row">
       <div class="scale-option"><input type="radio" name="eval2" id="eval2_1" value="1"><label for="eval2_1">1</label></div>
       <div class="scale-option"><input type="radio" name="eval2" id="eval2_2" value="2"><label for="eval2_2">2</label></div>
@@ -1610,7 +1664,7 @@ input:focus,textarea:focus,select:focus{
       <div class="scale-option"><input type="radio" name="eval3" id="eval3_5" value="5"><label for="eval3_5">5</label></div>
     </div>
 
-    <div class="eval-question">4. Setelah menggunakan Task Garden, saya lebih terdorong untuk mulai mengerjakan tugas dan mengurangi kebiasaan menunda.</div>
+    <div class="eval-question">4. Setelah menggunakan TemanTumbuh, saya lebih terdorong untuk mulai mengerjakan tugas dan mengurangi kebiasaan menunda.</div>
     <div class="scale-row">
       <div class="scale-option"><input type="radio" name="eval4" id="eval4_1" value="1"><label for="eval4_1">1</label></div>
       <div class="scale-option"><input type="radio" name="eval4" id="eval4_2" value="2"><label for="eval4_2">2</label></div>
@@ -1619,7 +1673,7 @@ input:focus,textarea:focus,select:focus{
       <div class="scale-option"><input type="radio" name="eval4" id="eval4_5" value="5"><label for="eval4_5">5</label></div>
     </div>
 
-    <div class="eval-question">5. Task Garden bermanfaat sebagai media pendukung layanan Bimbingan dan Konseling.</div>
+    <div class="eval-question">5. TemanTumbuh bermanfaat sebagai media pendukung layanan Bimbingan dan Konseling.</div>
     <div class="scale-row">
       <div class="scale-option"><input type="radio" name="eval5" id="eval5_1" value="1"><label for="eval5_1">1</label></div>
       <div class="scale-option"><input type="radio" name="eval5" id="eval5_2" value="2"><label for="eval5_2">2</label></div>
@@ -1628,12 +1682,12 @@ input:focus,textarea:focus,select:focus{
       <div class="scale-option"><input type="radio" name="eval5" id="eval5_5" value="5"><label for="eval5_5">5</label></div>
     </div>
 
-    <div class="eval-question">Fitur Task Garden mana yang paling membantu kamu?</div>
+    <div class="eval-question">Fitur TemanTumbuh mana yang paling membantu kamu?</div>
     <div class="choice-list">
       <label class="choice-option"><input type="radio" name="evalFeature" value="My Tasks"> My Tasks</label>
       <label class="choice-option"><input type="radio" name="evalFeature" value="Break It Down"> Break It Down</label>
       <label class="choice-option"><input type="radio" name="evalFeature" value="Priority Check"> Priority Check</label>
-      <label class="choice-option"><input type="radio" name="evalFeature" value="Daily Mission"> Daily Mission</label>
+      <label class="choice-option"><input type="radio" name="evalFeature" value="Daily Target"> Daily Target</label>
       <label class="choice-option"><input type="radio" name="evalFeature" value="Learn"> Learn</label>
       <label class="choice-option"><input type="radio" name="evalFeature" value="Motivation & Tips"> Motivation & Tips</label>
       <label class="choice-option"><input type="radio" name="evalFeature" value="Reflection"> Reflection</label>
@@ -1645,7 +1699,7 @@ input:focus,textarea:focus,select:focus{
     <div class="eval-question">Menurut kamu, dukungan atau layanan BK apa yang masih kamu butuhkan terkait belajar dan manajemen waktu?</div>
     <textarea id="evalNeed" placeholder="Tulis jawabanmu di sini..."></textarea>
 
-    <div class="eval-question">Apa saran kamu untuk pengembangan Task Garden agar lebih membantu?</div>
+    <div class="eval-question">Apa saran kamu untuk pengembangan TemanTumbuh agar lebih membantu?</div>
     <textarea id="evalSuggestion" placeholder="Tulis saranmu di sini..."></textarea>
 
     <button class="btn" style="width:100%;margin-top:12px;" onclick="saveEvaluation()">💾 Simpan Evaluasi di Perangkat</button>
@@ -1667,23 +1721,27 @@ input:focus,textarea:focus,select:focus{
 <nav class="bottom-nav">
 
   <button class="nav-btn active" id="navHome" onclick="showPage('homePage')">
-    <span class="nav-icon">⌂</span>Home
+    <span class="nav-icon">⌂</span>Beranda
+  </button>
+
+  <button class="nav-btn" id="navPlanner" onclick="showPage('plannerPage')">
+    <span class="nav-icon">🗓️</span>Rencana
   </button>
 
   <button class="nav-btn" id="navTasks" onclick="showPage('tasksPage')">
-    <span class="nav-icon">✓</span>Tasks
+    <span class="nav-icon">✓</span>Tugas
   </button>
 
   <button class="nav-btn" id="navLearn" onclick="showPage('learnPage')">
-    <span class="nav-icon">📚</span>Learn
+    <span class="nav-icon">📚</span>Belajar
   </button>
 
   <button class="nav-btn" id="navGarden" onclick="showPage('gardenPage')">
-    <span class="nav-icon">🌱</span>Garden
+    <span class="nav-icon">🌱</span>Progres
   </button>
 
   <button class="nav-btn" id="navReflect" onclick="showPage('reflectPage')">
-    <span class="nav-icon">💭</span>Reflect
+    <span class="nav-icon">💭</span>Refleksi
   </button>
 
   <button class="nav-btn" id="navEvaluation" onclick="showPage('evaluationPage')">
@@ -1729,6 +1787,11 @@ function showPage(pageId){
     document.getElementById('navTasks').classList.add('active');
   }
 
+  if(pageId === 'plannerPage'){
+    document.getElementById('navPlanner').classList.add('active');
+    renderStudyPlans();
+  }
+
   if(pageId === 'gardenPage'){
     document.getElementById('navGarden').classList.add('active');
   }
@@ -1769,11 +1832,11 @@ function cleanUserName(name){
 
 function updateUserNameUI(){
   const name = localStorage.getItem('taskGardenUserName') || '';
-  const safeName = name || 'Teman Task Garden';
+  const safeName = name || 'Teman TemanTumbuh';
   const headerName = document.getElementById('headerUserName');
   const welcomeTitle = document.getElementById('welcomeUserTitle');
 
-  if(headerName) headerName.textContent = name ? safeName : 'Teman Task Garden';
+  if(headerName) headerName.textContent = name ? safeName : 'Teman TemanTumbuh';
   if(welcomeTitle) welcomeTitle.textContent = name ? `Halo, ${safeName}! 👋` : 'Halo! 🌱';
 }
 
@@ -2335,21 +2398,21 @@ function displayPriority(){
 
 let missions =
   JSON.parse(
-    localStorage.getItem('taskGardenMissions')
+    localStorage.getItem('taskGardenTargets')
   ) || [];
 
 
-function saveMissions(){
+function saveTargets(){
 
   localStorage.setItem(
-    'taskGardenMissions',
+    'taskGardenTargets',
     JSON.stringify(missions)
   );
 
 }
 
 
-function addMission(){
+function addTarget(){
 
   const input =
     document.getElementById('missionInput');
@@ -2367,17 +2430,17 @@ function addMission(){
     completed:false
   });
 
-  saveMissions();
+  saveTargets();
 
   input.value='';
 
-  displayMissions();
+  displayTargets();
   updateHomeStats();
 
 }
 
 
-function toggleMission(id){
+function toggleTarget(id){
 
   const mission =
     missions.find(item=>item.id===id);
@@ -2389,30 +2452,30 @@ function toggleMission(id){
   mission.completed =
     !mission.completed;
 
-  saveMissions();
+  saveTargets();
 
-  displayMissions();
+  displayTargets();
   updateHomeStats();
 
 }
 
 
-function deleteMission(id){
+function deleteTarget(id){
 
   missions =
     missions.filter(
       item=>item.id!==id
     );
 
-  saveMissions();
+  saveTargets();
 
-  displayMissions();
+  displayTargets();
   updateHomeStats();
 
 }
 
 
-function displayMissions(){
+function displayTargets(){
 
   const list =
     document.getElementById('missionList');
@@ -2433,7 +2496,7 @@ function displayMissions(){
         <input
           type="checkbox"
           ${mission.completed?'checked':''}
-          onchange="toggleMission(${mission.id})"
+          onchange="toggleTarget(${mission.id})"
         >
 
         <div
@@ -2445,7 +2508,7 @@ function displayMissions(){
         <button
           class="btn btn-danger"
           style="padding:6px 9px;"
-          onclick="deleteMission(${mission.id})"
+          onclick="deleteTarget(${mission.id})"
         >
           ×
         </button>
@@ -2564,7 +2627,7 @@ function updateHomeStats(){
   ).textContent = completed;
 
   document.getElementById(
-    'homeMissionCount'
+    'homeTargetCount'
   ).textContent = missions.length;
 
 }
@@ -2728,7 +2791,7 @@ document.addEventListener(
 
     displayPriority();
 
-    displayMissions();
+    displayTargets();
 
     displayReflection();
 
@@ -2855,7 +2918,7 @@ function openGoogleEvaluation(){
       el.innerHTML = '🟢 Online · Data tugas tersimpan di perangkat.';
       el.classList.remove('offline');
     }else{
-      el.innerHTML = '🟡 Offline · Fitur utama Task Garden tetap bisa digunakan.';
+      el.innerHTML = '🟡 Offline · Fitur utama TemanTumbuh tetap bisa digunakan.';
       el.classList.add('offline');
     }
   }
@@ -2875,7 +2938,7 @@ function openGoogleEvaluation(){
     const button = document.getElementById('installButton');
     if(button) button.classList.remove('show');
     const el = document.getElementById('pwaStatus');
-    if(el) el.innerHTML = '✅ Task Garden sudah ditambahkan sebagai aplikasi.';
+    if(el) el.innerHTML = '✅ TemanTumbuh sudah ditambahkan sebagai aplikasi.';
   });
 
   document.addEventListener('DOMContentLoaded', ()=>{
@@ -2900,6 +2963,40 @@ function openGoogleEvaluation(){
     }
   });
 })();
+
+/* =========================================================
+   RENCANA BELAJAR + TIMER FOKUS
+   Data disimpan lokal di perangkat, sama seperti fitur lama.
+========================================================= */
+function getStudyPlans(){
+  try{return JSON.parse(localStorage.getItem('temanTumbuhStudyPlans')||'[]')}catch(e){return []}
+}
+function saveStudyPlans(items){localStorage.setItem('temanTumbuhStudyPlans',JSON.stringify(items));renderStudyPlans();updateHomeStats();}
+function addStudyPlan(){
+  const titleEl=document.getElementById('planTitle');
+  const dateEl=document.getElementById('planDate');
+  const minutesEl=document.getElementById('planMinutes');
+  const title=(titleEl.value||'').trim();
+  if(!title){titleEl.focus();titleEl.setCustomValidity('Tulis kegiatan belajar terlebih dahulu.');titleEl.reportValidity();titleEl.setCustomValidity('');return;}
+  const items=getStudyPlans();
+  items.unshift({id:Date.now().toString(36)+Math.random().toString(36).slice(2,7),title:title,date:dateEl.value||'',minutes:Number(minutesEl.value)||25,done:false,createdAt:new Date().toISOString()});
+  saveStudyPlans(items);titleEl.value='';titleEl.focus();
+}
+function toggleStudyPlan(id){saveStudyPlans(getStudyPlans().map(p=>p.id===id?{...p,done:!p.done}:p));}
+function deleteStudyPlan(id){saveStudyPlans(getStudyPlans().filter(p=>p.id!==id));}
+function renderStudyPlans(){
+  const list=document.getElementById('studyPlanList');if(!list)return;
+  const plans=getStudyPlans();
+  if(!plans.length){list.innerHTML='<div class="empty-plans">Belum ada rencana. Mulai dari satu tugas kecil hari ini 🌷</div>';return;}
+  list.innerHTML=plans.map(p=>{const date=p.date?new Date(p.date+'T00:00:00').toLocaleDateString('id-ID',{day:'numeric',month:'short',year:'numeric'}):'Tanpa tanggal target';return `<div class="study-plan-item ${p.done?'done':''}"><input class="plan-check" type="checkbox" aria-label="Tandai selesai" ${p.done?'checked':''} onchange="toggleStudyPlan('${p.id}')"><div class="plan-main"><div class="plan-name">${escapeHTML(p.title)}</div><div class="plan-meta">📅 ${date} · ⏱️ ${p.minutes} menit · ${p.done?'Selesai':'Belum selesai'}</div></div><button class="plan-delete" aria-label="Hapus rencana" onclick="deleteStudyPlan('${p.id}')">Hapus</button></div>`}).join('');
+}
+let focusSeconds=25*60,focusInterval=null,focusRunning=false;
+function renderFocusTimer(){const face=document.getElementById('focusTimer'),status=document.getElementById('focusTimerStatus'),btn=document.getElementById('focusStartBtn');if(!face||!status||!btn)return;face.textContent=String(Math.floor(focusSeconds/60)).padStart(2,'0')+':'+String(focusSeconds%60).padStart(2,'0');btn.textContent=focusRunning?'Ⅱ Jeda':'▶ Lanjut fokus';status.textContent=focusSeconds===0?'Sesi selesai — hebat, kamu sudah meluangkan waktu!':focusRunning?'Sedang fokus. Satu langkah pada satu waktu.':'Siap untuk satu sesi fokus?';}
+function toggleFocusTimer(){if(focusRunning){clearInterval(focusInterval);focusInterval=null;focusRunning=false;renderFocusTimer();return;}if(focusSeconds<=0)focusSeconds=25*60;focusRunning=true;renderFocusTimer();focusInterval=setInterval(()=>{focusSeconds--;if(focusSeconds<=0){focusSeconds=0;clearInterval(focusInterval);focusInterval=null;focusRunning=false;}renderFocusTimer();},1000);}
+function resetFocusTimer(){if(focusInterval)clearInterval(focusInterval);focusInterval=null;focusRunning=false;focusSeconds=25*60;renderFocusTimer();}
+
+renderStudyPlans();
+renderFocusTimer();
 initUserName();
 </script>
 

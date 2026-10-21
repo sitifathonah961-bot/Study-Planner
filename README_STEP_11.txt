@@ -1,27 +1,26 @@
-# Task Garden — Step 11
+# TemanTumbuh — PWA revisi
 
-Isi folder ini:
-- index.html
-- manifest.json
-- sw.js
-- icon-192.png
-- icon-512.png
+Media bimbingan belajar digital untuk mendukung keterampilan manajemen waktu dan membantu siswa mengurangi kebiasaan menunda tugas akademik.
 
-Untuk GitHub Pages:
-1. Buka repository Task Garden.
-2. Ganti `index.html` lama dengan `index.html` dari folder ini.
-3. Upload `manifest.json`, `sw.js`, `icon-192.png`, dan `icon-512.png` ke folder yang sama dengan `index.html`.
-4. Commit perubahan.
-5. Buka website Task Garden melalui HTTPS/GitHub Pages.
-6. Di HP, gunakan tombol `Tambahkan ke Layar Utama` jika browser menampilkannya, atau gunakan menu browser → `Tambahkan ke layar utama` / `Install app`.
+## Isi paket
+- `index.html` — aplikasi utama
+- `manifest.json` — identitas PWA TemanTumbuh
+- `sw.js` — service worker dan cache offline
+- `icon-192.png`, `icon-512.png` — ikon aplikasi (ikon lama dipertahankan; dapat diganti dengan logo TemanTumbuh khusus)
 
-Google Form yang sudah terhubung tetap dipertahankan di `index.html`.
+## Deploy ke GitHub Pages
+1. Buat salinan/branch cadangan repository lama.
+2. Unggah kelima file ini ke folder yang sama dengan `index.html`.
+3. Commit dan pastikan GitHub Pages menggunakan folder/branch yang benar.
+4. Buka situs melalui HTTPS. Untuk memperbarui PWA yang pernah dipasang, tutup aplikasi dan buka kembali setelah service worker memperbarui cache.
 
+## Fitur yang dipertahankan
+Daftar tugas, pemecahan tugas, prioritas, target/misi, progres, materi belajar, tips, refleksi, evaluasi, personalisasi nama, dan instalasi PWA. Kunci penyimpanan fitur lama sengaja tidak diganti agar data lama pada perangkat yang sama tetap dapat dibaca.
 
-FINAL LOOK UPDATE
-- Added first-use name screen and personalized greeting (e.g. “Halo, Sifa!”).
-- Name is stored locally on the device using localStorage.
-- Added “Ganti nama” button in the header.
-- Refined visual styling while preserving existing Task Garden features.
-- Google Form evaluation link remains unchanged.
-- Service worker cache version updated to v12.
+## Penambahan
+- Halaman Rencana Belajar untuk menyimpan aktivitas, tanggal target, durasi, dan status selesai.
+- Timer fokus 25 menit dengan jeda dan reset.
+- Bahasa antarmuka diarahkan ke konteks belajar siswa dan manajemen waktu.
+- Identitas aplikasi dan cache PWA diganti menjadi TemanTumbuh.
+
+Catatan: data aplikasi disimpan secara lokal di browser/perangkat; tidak otomatis tersinkron antarperangkat. Evaluasi penelitian tetap perlu disesuaikan dengan instrumen angket yang digunakan dalam proposal.

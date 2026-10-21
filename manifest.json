@@ -1,7 +1,7 @@
 {
-  "name": "Task Garden",
-  "short_name": "Task Garden",
-  "description": "Media pendukung BK untuk membantu manajemen waktu, tugas, refleksi, dan evaluasi.",
+  "name": "TemanTumbuh",
+  "short_name": "TemanTumbuh",
+  "description": "Media bimbingan belajar digital untuk manajemen waktu, perencanaan tugas, refleksi, dan mengurangi kebiasaan menunda.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
