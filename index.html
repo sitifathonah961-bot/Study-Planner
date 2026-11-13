@@ -1186,6 +1186,7 @@ input:focus,textarea:focus,select:focus{
   #ttPortal,#ttTeacher{padding-top:55px}
 }
 </style>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 
 <body>
@@ -1197,10 +1198,10 @@ input:focus,textarea:focus,select:focus{
 
     <div id="ttLoginPanel">
       <h2>Masuk</h2>
-      <label>Nama</label>
-      <input id="ttLoginName" placeholder="Masukkan nama">
-      <label>PIN</label>
-      <input id="ttLoginPin" type="password" inputmode="numeric" maxlength="12" placeholder="Masukkan PIN">
+      <label>Email</label>
+      <input id="ttLoginEmail" type="email" autocomplete="email" placeholder="nama@email.com">
+      <label>Password</label>
+      <input id="ttLoginPassword" type="password" autocomplete="current-password" placeholder="Masukkan password">
       <button class="tt-action" onclick="ttLogin()">Masuk ke TemanTumbuh</button>
       <button class="tt-action tt-secondary" onclick="ttShowRegister()">Belum punya akun? Daftar</button>
       <div id="ttLoginError" class="tt-error"></div>
@@ -1209,24 +1210,26 @@ input:focus,textarea:focus,select:focus{
     <div id="ttRegisterPanel" class="tt-hidden">
       <h2>Buat Akun</h2>
       <label>Nama lengkap</label>
-      <input id="ttRegName" maxlength="50" placeholder="Nama kamu">
-      <label>Buat PIN</label>
-      <input id="ttRegPin" type="password" inputmode="numeric" maxlength="12" placeholder="Minimal 4 angka">
+      <input id="ttRegName" maxlength="50" autocomplete="name" placeholder="Nama kamu">
+      <label>Email</label>
+      <input id="ttRegEmail" type="email" autocomplete="email" placeholder="nama@email.com">
+      <label>Password (minimal 8 karakter)</label>
+      <input id="ttRegPassword" type="password" autocomplete="new-password" placeholder="Buat password">
       <label>Daftar sebagai</label>
       <select id="ttRegRole" onchange="ttRoleChanged()">
         <option value="siswa">Siswa</option>
         <option value="guru">Guru BK</option>
       </select>
       <div id="ttJoinCodeWrap">
-        <label>Kode undangan dari Guru BK</label>
+        <label>Kode undangan dari Guru BK (jika sudah ada)</label>
         <input id="ttJoinCode" maxlength="12" placeholder="Masukkan kode guru">
       </div>
       <button class="tt-action" onclick="ttRegister()">Buat akun</button>
       <button class="tt-action tt-secondary" onclick="ttShowLogin()">Kembali ke halaman masuk</button>
       <div id="ttRegisterError" class="tt-error"></div>
+      <p class="tt-note">Setelah mendaftar, buka email untuk konfirmasi akun sebelum masuk.</p>
     </div>
-
-    <p class="tt-note">Versi uji coba ini menyimpan akun di browser/perangkat yang digunakan. Akun belum tersinkron antarperangkat.</p>
+    <p class="tt-note">Akun dan progres tersimpan online. Gunakan email dan password yang sama saat berganti perangkat.</p>
   </div>
 </div>
 
@@ -1237,9 +1240,9 @@ input:focus,textarea:focus,select:focus{
       <h1>Dashboard Guru BK</h1>
       <p class="tt-sub" id="ttTeacherGreeting">Selamat datang!</p>
       <p class="tt-sub">Bagikan kode ini kepada siswa.</p>
-      <div class="tt-code" id="ttTeacherCode">------</div>
+      <div class="tt-code" id="ttTeacherCode">Memuat...</div>
       <h2 style="font-size:18px;margin-top:22px">Siswa yang bergabung</h2>
-      <div id="ttStudentList"></div>
+      <div id="ttStudentList"><p class="tt-sub">Memuat data siswa...</p></div>
       <button class="tt-action tt-secondary" onclick="ttLogout()">Keluar</button>
     </div>
   </div>
@@ -3084,148 +3087,182 @@ function resetFocusTimer(){if(focusInterval)clearInterval(focusInterval);focusIn
 
 renderStudyPlans();
 renderFocusTimer();
-initUserName();
 </script>
 <script>
-function ttReadAccounts(){
-  try{return JSON.parse(localStorage.getItem('temantumbuhAkun')||'[]')}
-  catch(e){return []}
-}
-
-function ttSaveAccounts(items){
-  localStorage.setItem('temantumbuhAkun',JSON.stringify(items));
-}
-
-function ttMakeId(){
-  return 'tt-'+Date.now().toString(36)+Math.random().toString(36).slice(2,7);
-}
-
-function ttMakeCode(){
-  const chars='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
-  let code='';
-  for(let i=0;i<6;i++)code+=chars[Math.floor(Math.random()*chars.length)];
-  return code;
-}
+// Supabase TemanTumbuh: Auth, sinkronisasi data, dan dashboard Guru BK.
+const TT_SUPABASE_URL = 'https://ozemwmbcrfvvniraxkkb.supabase.co';
+const TT_SUPABASE_KEY = 'sb_publishable_I8H4X_bk7K7uH-OMVzJDNQ_KwIITxp4';
+const ttSupabase = window.supabase.createClient(TT_SUPABASE_URL, TT_SUPABASE_KEY, {
+  auth: { storage: window.sessionStorage, persistSession: true, autoRefreshToken: true, detectSessionInUrl: true }
+});
+const TT_DATA_KEYS = [
+  'taskGardenTasks','taskGardenBreakdown','taskGardenPriorityTasks','taskGardenTargets',
+  'taskGardenReflection','taskGardenEvaluation','temanTumbuhStudyPlans','taskGardenUserName'
+];
+let ttActiveUser = null;
+let ttSyncTimer = null;
+let ttHydrating = false;
 
 function ttShowRegister(){
   document.getElementById('ttLoginPanel').classList.add('tt-hidden');
   document.getElementById('ttRegisterPanel').classList.remove('tt-hidden');
 }
-
 function ttShowLogin(){
   document.getElementById('ttRegisterPanel').classList.add('tt-hidden');
   document.getElementById('ttLoginPanel').classList.remove('tt-hidden');
 }
-
 function ttRoleChanged(){
-  const siswa=document.getElementById('ttRegRole').value==='siswa';
-  document.getElementById('ttJoinCodeWrap').classList.toggle('tt-hidden',!siswa);
+  const isStudent = document.getElementById('ttRegRole').value === 'siswa';
+  document.getElementById('ttJoinCodeWrap').classList.toggle('tt-hidden', !isStudent);
 }
-
-function ttRegister(){
+function ttMessage(id, message){
+  const el=document.getElementById(id); if(el) el.textContent=message||'';
+}
+function ttFriendlyError(error){
+  const m=(error && error.message) ? error.message : String(error||'Terjadi kesalahan.');
+  if(/Invalid login credentials/i.test(m)) return 'Email atau password belum cocok.';
+  if(/User already registered/i.test(m)) return 'Email ini sudah terdaftar. Silakan masuk.';
+  if(/Password should be at least/i.test(m)) return 'Password minimal 8 karakter.';
+  return m;
+}
+async function ttRegister(){
   const nama=document.getElementById('ttRegName').value.trim();
-  const pin=document.getElementById('ttRegPin').value.trim();
-  const peran=document.getElementById('ttRegRole').value;
-  const kode=document.getElementById('ttJoinCode').value.trim().toUpperCase();
-  const error=document.getElementById('ttRegisterError');
-  error.textContent='';
-
-  if(nama.length<2){error.textContent='Nama minimal 2 karakter.';return;}
-  if(!/^\d{4,12}$/.test(pin)){error.textContent='PIN harus 4 sampai 12 angka.';return;}
-
-  const accounts=ttReadAccounts();
-
-  if(accounts.some(a=>a.nama.toLowerCase()===nama.toLowerCase()&&a.peran===peran)){
-    error.textContent='Nama dengan peran tersebut sudah terdaftar.';
-    return;
-  }
-
-  let guru=null;
-
-  if(peran==='siswa'){
-    guru=accounts.find(a=>a.peran==='guru'&&a.kode===kode);
-    if(!guru){error.textContent='Kode Guru BK tidak ditemukan.';return;}
-  }
-
-  const user={
-    id:ttMakeId(),
-    nama:nama,
-    pin:pin,
-    peran:peran,
-    guruId:guru?guru.id:null,
-    kode:peran==='guru'?ttMakeCode():null
-  };
-
-  accounts.push(user);
-  ttSaveAccounts(accounts);
-  localStorage.setItem('temantumbuhSesi',user.id);
-  ttOpenAccount(user);
-}
-
-function ttLogin(){
-  const nama=document.getElementById('ttLoginName').value.trim().toLowerCase();
-  const pin=document.getElementById('ttLoginPin').value.trim();
-  const error=document.getElementById('ttLoginError');
-
-  const user=ttReadAccounts().find(a=>
-    a.nama.toLowerCase()===nama&&a.pin===pin
-  );
-
-  if(!user){error.textContent='Nama atau PIN tidak cocok.';return;}
-
-  localStorage.setItem('temantumbuhSesi',user.id);
-  ttOpenAccount(user);
-}
-
-function ttOpenAccount(user){
-  document.getElementById('ttPortal').classList.add('tt-hidden');
-
-  const teacher=document.getElementById('ttTeacher');
-  const app=document.getElementById('ttStudentApp');
-
-  if(user.peran==='guru'){
-    app.style.display='none';
-    teacher.classList.remove('tt-hidden');
-
-    document.getElementById('ttTeacherGreeting').textContent='Selamat datang, '+user.nama+'!';
-    document.getElementById('ttTeacherCode').textContent=user.kode;
-
-    const students=ttReadAccounts().filter(a=>
-      a.peran==='siswa'&&a.guruId===user.id
-    );
-
-    document.getElementById('ttStudentList').innerHTML=
-      students.length
-      ?students.map((s,i)=>'<div class="tt-student">'+(i+1)+'. '+s.nama+'</div>').join('')
-      :'<p class="tt-sub">Belum ada siswa yang bergabung.</p>';
-
+  const email=document.getElementById('ttRegEmail').value.trim();
+  const password=document.getElementById('ttRegPassword').value;
+  const role=document.getElementById('ttRegRole').value;
+  const code=document.getElementById('ttJoinCode').value.trim().toUpperCase();
+  ttMessage('ttRegisterError','');
+  if(nama.length<2){ttMessage('ttRegisterError','Nama minimal 2 karakter.');return;}
+  if(role==='siswa' && !code){ttMessage('ttRegisterError','Masukkan kode undangan dari Guru BK terlebih dahulu.');return;}
+  if(!email){ttMessage('ttRegisterError','Masukkan email yang valid.');return;}
+  if(password.length<8){ttMessage('ttRegisterError','Password minimal 8 karakter.');return;}
+  if(role==='siswa' && code) localStorage.setItem('ttPendingTeacherCode',code);
+  else localStorage.removeItem('ttPendingTeacherCode');
+  const {data,error}=await ttSupabase.auth.signUp({
+    email,password,
+    options:{emailRedirectTo:'https://sitifathonah961-bot.github.io/Study-Planner/',data:{full_name:nama,role}}
+  });
+  if(error){ttMessage('ttRegisterError',ttFriendlyError(error));return;}
+  if(data.session){
+    await ttAfterAuth(data.session.user);
   }else{
-    teacher.classList.add('tt-hidden');
-    app.style.display='block';
-
-    localStorage.setItem('taskGardenUserName',user.nama);
-
-    if(typeof updateUserNameUI==='function')updateUserNameUI();
-    if(typeof updateDate==='function')updateDate();
-    if(typeof displayTasks==='function')displayTasks();
-    if(typeof updateGarden==='function')updateGarden();
-    if(typeof updateHomeStats==='function')updateHomeStats();
+    ttMessage('ttRegisterError','Pendaftaran berhasil. Silakan buka email untuk konfirmasi, lalu masuk menggunakan email dan password.');
+    ttShowLogin();
   }
 }
-
-function ttLogout(){
-  localStorage.removeItem('temantumbuhSesi');
+async function ttLogin(){
+  const email=document.getElementById('ttLoginEmail').value.trim();
+  const password=document.getElementById('ttLoginPassword').value;
+  ttMessage('ttLoginError','');
+  if(!email||!password){ttMessage('ttLoginError','Isi email dan password terlebih dahulu.');return;}
+  const {data,error}=await ttSupabase.auth.signInWithPassword({email,password});
+  if(error){ttMessage('ttLoginError',ttFriendlyError(error));return;}
+  await ttAfterAuth(data.user);
+}
+async function ttAfterAuth(user){
+  const {data:profile,error}=await ttSupabase.from('profiles')
+    .select('id,full_name,role,approval_status,invite_code,teacher_id')
+    .eq('id',user.id).single();
+  if(error||!profile){ttMessage('ttLoginError','Profil akun belum tersedia. Hubungi pengelola aplikasi.');await ttSupabase.auth.signOut();return;}
+  if(profile.role==='guru' && profile.approval_status!=='approved'){
+    const status=profile.approval_status==='rejected'?'ditolak':'masih menunggu persetujuan pengelola';
+    ttMessage('ttLoginError','Akun Guru BK '+status+'. Silakan coba lagi setelah ada persetujuan.');
+    await ttSupabase.auth.signOut();return;
+  }
+  ttActiveUser=user;
+  if(profile.role==='siswa'){
+    const pendingCode=localStorage.getItem('ttPendingTeacherCode');
+    if(pendingCode){
+      const {error:joinError}=await ttSupabase.rpc('join_teacher_by_code',{p_invite_code:pendingCode});
+      if(joinError){ttMessage('ttLoginError','Akun berhasil masuk, tetapi kode guru belum terhubung: '+ttFriendlyError(joinError));}
+      else localStorage.removeItem('ttPendingTeacherCode');
+    }
+    const loaded=await ttLoadStudentData(user.id,profile.full_name||'');
+    if(!loaded){ttActiveUser=null;await ttSupabase.auth.signOut();return;}
+    document.getElementById('ttPortal').classList.add('tt-hidden');
+    document.getElementById('ttTeacher').classList.add('tt-hidden');
+    document.getElementById('ttStudentApp').style.display='block';
+    updateUserNameUI();
+    updateDate(); displayTasks(); displayBreakdown(); displayPriority(); displayTargets();
+    displayReflection(); displayEvaluation(); renderStudyPlans(); renderFocusTimer();
+    updateGarden(); updateHomeStats(); initUserName();
+  }else{
+    document.getElementById('ttPortal').classList.add('tt-hidden');
+    document.getElementById('ttStudentApp').style.display='none';
+    document.getElementById('ttTeacher').classList.remove('tt-hidden');
+    document.getElementById('ttTeacherGreeting').textContent='Selamat datang, '+(profile.full_name||'Guru BK')+'!';
+    document.getElementById('ttTeacherCode').textContent=profile.invite_code||'Kode belum tersedia';
+    await ttLoadTeacherStudents(user.id);
+  }
+}
+async function ttLoadStudentData(userId,fullName){
+  // Bersihkan data lokal dari akun/perangkat lain sebelum memuat data milik akun ini.
+  ttHydrating=true;
+  TT_DATA_KEYS.forEach(k=>localStorage.removeItem(k));
+  const {data,error}=await ttSupabase.from('student_data').select('category,payload').eq('owner_id',userId);
+  if(error){ttHydrating=false;ttMessage('ttLoginError','Gagal memuat data akun: '+ttFriendlyError(error));return false;}
+  (data||[]).forEach(row=>{
+    if(TT_DATA_KEYS.includes(row.category)) localStorage.setItem(row.category,JSON.stringify(row.payload));
+  });
+  localStorage.setItem('taskGardenUserName',fullName||'');
+  // Muat ulang variabel fitur yang dibaca saat halaman pertama kali dibuka.
+  tasks=JSON.parse(localStorage.getItem('taskGardenTasks')||'[]');
+  breakdownData=JSON.parse(localStorage.getItem('taskGardenBreakdown')||'null');
+  priorityTasks=JSON.parse(localStorage.getItem('taskGardenPriorityTasks')||'[]');
+  missions=JSON.parse(localStorage.getItem('taskGardenTargets')||'[]');
+  reflection=JSON.parse(localStorage.getItem('taskGardenReflection')||'null');
+  ttHydrating=false;
+  return true;
+}
+function ttScheduleSync(key,value){
+  if(ttHydrating||!ttActiveUser||!TT_DATA_KEYS.includes(key)) return;
+  clearTimeout(ttSyncTimer);
+  ttSyncTimer=setTimeout(async()=>{
+    let payload;
+    try{payload=JSON.parse(value);}catch(e){payload=value;}
+    const {error}=await ttSupabase.from('student_data').upsert({
+      owner_id:ttActiveUser.id,category:key,payload,updated_at:new Date().toISOString()
+    },{onConflict:'owner_id,category'});
+    if(error) console.warn('Sinkronisasi TemanTumbuh gagal:',error.message);
+  },500);
+}
+// Simpan otomatis ke cloud setiap fitur lama menyimpan data di localStorage.
+const ttOriginalSetItem=Storage.prototype.setItem;
+Storage.prototype.setItem=function(key,value){
+  ttOriginalSetItem.call(this,key,value);
+  if(this===window.localStorage) ttScheduleSync(String(key),String(value));
+};
+async function ttLoadTeacherStudents(teacherId){
+  const box=document.getElementById('ttStudentList');
+  box.innerHTML='<p class="tt-sub">Memuat data siswa...</p>';
+  const {data:students,error}=await ttSupabase.from('profiles')
+    .select('id,full_name,created_at').eq('teacher_id',teacherId).eq('role','siswa').order('full_name');
+  if(error){box.textContent='Data siswa belum dapat dimuat: '+ttFriendlyError(error);return;}
+  if(!students||!students.length){box.innerHTML='<p class="tt-sub">Belum ada siswa yang bergabung. Bagikan kode undangan di atas.</p>';return;}
+  const cards=[];
+  for(const student of students){
+    const {data:rows,error:dataError}=await ttSupabase.from('student_data')
+      .select('category,payload,updated_at').eq('owner_id',student.id).order('category');
+    let details=dataError?'<p>Data progres belum dapat dimuat.</p>':(rows||[]).map(row=>{
+      const pretty=JSON.stringify(row.payload,null,2);
+      return '<details style="margin:8px 0;padding:9px;background:#faf7ff;border-radius:10px"><summary>'+ttEscape(row.category)+'</summary><pre style="white-space:pre-wrap;overflow-wrap:anywhere;font-size:11px;margin-top:8px">'+ttEscape(pretty)+'</pre></details>';
+    }).join('')||'<p class="tt-sub">Belum ada progres tersimpan.</p>';
+    cards.push('<div class="tt-student"><strong>'+ttEscape(student.full_name||'Siswa')+'</strong>'+details+'</div>');
+  }
+  box.innerHTML=cards.join('');
+}
+function ttEscape(value){return String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+async function ttLogout(){
+  ttActiveUser=null;
+  await ttSupabase.auth.signOut();
+  TT_DATA_KEYS.forEach(k=>localStorage.removeItem(k));
   location.reload();
 }
-
-document.addEventListener('DOMContentLoaded',function(){
-  const id=localStorage.getItem('temantumbuhSesi');
-
-  if(!id)return;
-
-  const user=ttReadAccounts().find(a=>a.id===id);
-
-  if(user)ttOpenAccount(user);
+document.addEventListener('DOMContentLoaded',async()=>{
+  ttRoleChanged();
+  // Email confirmation may return the user to the app with an auth code in the URL.
+  const {data:{session}}=await ttSupabase.auth.getSession();
+  if(session) await ttAfterAuth(session.user);
 });
 </script>
 </body>
