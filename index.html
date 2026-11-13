@@ -1152,11 +1152,98 @@ input:focus,textarea:focus,select:focus{
 .nav-icon{font-size:17px!important}
 @media(max-width:360px){.nav-btn{font-size:8px!important}.nav-icon{font-size:15px!important}.timer-face{font-size:42px}}
 </style>
-
+<style>
+#ttPortal,#ttTeacher{
+  min-height:100vh;
+  padding:28px 18px;
+  background:linear-gradient(145deg,#f7f2ff,#fff8fb);
+  font-family:Arial,sans-serif;
+  color:#514766;
+}
+.tt-box{
+  max-width:430px;
+  margin:35px auto;
+  background:#fff;
+  padding:24px;
+  border-radius:24px;
+  box-shadow:0 10px 35px rgba(104,82,143,.12);
+}
+.tt-brand{text-align:center;font-size:34px;margin-bottom:8px}
+.tt-box h1,.tt-box h2{text-align:center;color:#7864a8;margin:0 0 8px}
+.tt-sub{text-align:center;color:#81798e;font-size:13px;line-height:1.6;margin-bottom:20px}
+.tt-box label{display:block;font-size:12px;font-weight:bold;margin:12px 0 6px}
+.tt-box input,.tt-box select{width:100%;padding:13px;border:1px solid #e8e0f0;border-radius:12px;font-size:16px;background:#fff;color:#514766}
+.tt-action{width:100%;border:0;border-radius:13px;padding:13px;margin-top:13px;background:#927bc4;color:#fff;font-weight:bold;font-size:15px;cursor:pointer}
+.tt-secondary{background:#f2eafa;color:#6e5a94}
+.tt-note{font-size:11px;line-height:1.5;color:#8b8297;margin-top:15px}
+.tt-hidden{display:none!important}
+.tt-code{font-size:26px;font-weight:800;letter-spacing:4px;text-align:center;background:#f5efff;border:1px dashed #a895d5;padding:15px;border-radius:14px;margin:12px 0}
+.tt-student{padding:11px;border:1px solid #eee7f5;border-radius:12px;margin:8px 0;font-size:13px;background:#fff}
+.tt-top{max-width:700px;margin:0 auto}
+.tt-top .tt-box{max-width:none;margin:12px auto}
+.tt-error{color:#b64b70;font-size:12px;margin-top:10px;min-height:16px}
+@media(min-width:700px){
+  #ttPortal,#ttTeacher{padding-top:55px}
+}
+</style>
 </head>
 
 <body>
+<div id="ttPortal">
+  <div class="tt-box">
+    <div class="tt-brand">🌱</div>
+    <h1>TemanTumbuh</h1>
+    <p class="tt-sub">Tumbuh Teratur, Belajar Lebih Baik.<br>Masuk atau buat akun untuk melanjutkan.</p>
 
+    <div id="ttLoginPanel">
+      <h2>Masuk</h2>
+      <label>Nama</label>
+      <input id="ttLoginName" placeholder="Masukkan nama">
+      <label>PIN</label>
+      <input id="ttLoginPin" type="password" inputmode="numeric" maxlength="12" placeholder="Masukkan PIN">
+      <button class="tt-action" onclick="ttLogin()">Masuk ke TemanTumbuh</button>
+      <button class="tt-action tt-secondary" onclick="ttShowRegister()">Belum punya akun? Daftar</button>
+      <div id="ttLoginError" class="tt-error"></div>
+    </div>
+
+    <div id="ttRegisterPanel" class="tt-hidden">
+      <h2>Buat Akun</h2>
+      <label>Nama lengkap</label>
+      <input id="ttRegName" maxlength="50" placeholder="Nama kamu">
+      <label>Buat PIN</label>
+      <input id="ttRegPin" type="password" inputmode="numeric" maxlength="12" placeholder="Minimal 4 angka">
+      <label>Daftar sebagai</label>
+      <select id="ttRegRole" onchange="ttRoleChanged()">
+        <option value="siswa">Siswa</option>
+        <option value="guru">Guru BK</option>
+      </select>
+      <div id="ttJoinCodeWrap">
+        <label>Kode undangan dari Guru BK</label>
+        <input id="ttJoinCode" maxlength="12" placeholder="Masukkan kode guru">
+      </div>
+      <button class="tt-action" onclick="ttRegister()">Buat akun</button>
+      <button class="tt-action tt-secondary" onclick="ttShowLogin()">Kembali ke halaman masuk</button>
+      <div id="ttRegisterError" class="tt-error"></div>
+    </div>
+
+    <p class="tt-note">Versi uji coba ini menyimpan akun di browser/perangkat yang digunakan. Akun belum tersinkron antarperangkat.</p>
+  </div>
+</div>
+
+<div id="ttTeacher" class="tt-hidden">
+  <div class="tt-top">
+    <div class="tt-box">
+      <div class="tt-brand">🌷</div>
+      <h1>Dashboard Guru BK</h1>
+      <p class="tt-sub" id="ttTeacherGreeting">Selamat datang!</p>
+      <p class="tt-sub">Bagikan kode ini kepada siswa.</p>
+      <div class="tt-code" id="ttTeacherCode">------</div>
+      <h2 style="font-size:18px;margin-top:22px">Siswa yang bergabung</h2>
+      <div id="ttStudentList"></div>
+      <button class="tt-action tt-secondary" onclick="ttLogout()">Keluar</button>
+    </div>
+  </div>
+</div>
 <!-- ================= USER NAME ================= -->
 <div class="name-overlay hidden" id="nameOverlay" aria-hidden="true">
   <div class="name-modal" role="dialog" aria-modal="true" aria-labelledby="nameModalTitle">
@@ -1169,7 +1256,7 @@ input:focus,textarea:focus,select:focus{
   </div>
 </div>
 
-<div class="app">
+<div class="app" id="ttStudentApp" style="display:none">
 
 <!-- ================= HEADER ================= -->
 
@@ -2999,6 +3086,147 @@ renderStudyPlans();
 renderFocusTimer();
 initUserName();
 </script>
+<script>
+function ttReadAccounts(){
+  try{return JSON.parse(localStorage.getItem('temantumbuhAkun')||'[]')}
+  catch(e){return []}
+}
 
+function ttSaveAccounts(items){
+  localStorage.setItem('temantumbuhAkun',JSON.stringify(items));
+}
+
+function ttMakeId(){
+  return 'tt-'+Date.now().toString(36)+Math.random().toString(36).slice(2,7);
+}
+
+function ttMakeCode(){
+  const chars='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  let code='';
+  for(let i=0;i<6;i++)code+=chars[Math.floor(Math.random()*chars.length)];
+  return code;
+}
+
+function ttShowRegister(){
+  document.getElementById('ttLoginPanel').classList.add('tt-hidden');
+  document.getElementById('ttRegisterPanel').classList.remove('tt-hidden');
+}
+
+function ttShowLogin(){
+  document.getElementById('ttRegisterPanel').classList.add('tt-hidden');
+  document.getElementById('ttLoginPanel').classList.remove('tt-hidden');
+}
+
+function ttRoleChanged(){
+  const siswa=document.getElementById('ttRegRole').value==='siswa';
+  document.getElementById('ttJoinCodeWrap').classList.toggle('tt-hidden',!siswa);
+}
+
+function ttRegister(){
+  const nama=document.getElementById('ttRegName').value.trim();
+  const pin=document.getElementById('ttRegPin').value.trim();
+  const peran=document.getElementById('ttRegRole').value;
+  const kode=document.getElementById('ttJoinCode').value.trim().toUpperCase();
+  const error=document.getElementById('ttRegisterError');
+  error.textContent='';
+
+  if(nama.length<2){error.textContent='Nama minimal 2 karakter.';return;}
+  if(!/^\d{4,12}$/.test(pin)){error.textContent='PIN harus 4 sampai 12 angka.';return;}
+
+  const accounts=ttReadAccounts();
+
+  if(accounts.some(a=>a.nama.toLowerCase()===nama.toLowerCase()&&a.peran===peran)){
+    error.textContent='Nama dengan peran tersebut sudah terdaftar.';
+    return;
+  }
+
+  let guru=null;
+
+  if(peran==='siswa'){
+    guru=accounts.find(a=>a.peran==='guru'&&a.kode===kode);
+    if(!guru){error.textContent='Kode Guru BK tidak ditemukan.';return;}
+  }
+
+  const user={
+    id:ttMakeId(),
+    nama:nama,
+    pin:pin,
+    peran:peran,
+    guruId:guru?guru.id:null,
+    kode:peran==='guru'?ttMakeCode():null
+  };
+
+  accounts.push(user);
+  ttSaveAccounts(accounts);
+  localStorage.setItem('temantumbuhSesi',user.id);
+  ttOpenAccount(user);
+}
+
+function ttLogin(){
+  const nama=document.getElementById('ttLoginName').value.trim().toLowerCase();
+  const pin=document.getElementById('ttLoginPin').value.trim();
+  const error=document.getElementById('ttLoginError');
+
+  const user=ttReadAccounts().find(a=>
+    a.nama.toLowerCase()===nama&&a.pin===pin
+  );
+
+  if(!user){error.textContent='Nama atau PIN tidak cocok.';return;}
+
+  localStorage.setItem('temantumbuhSesi',user.id);
+  ttOpenAccount(user);
+}
+
+function ttOpenAccount(user){
+  document.getElementById('ttPortal').classList.add('tt-hidden');
+
+  const teacher=document.getElementById('ttTeacher');
+  const app=document.getElementById('ttStudentApp');
+
+  if(user.peran==='guru'){
+    app.style.display='none';
+    teacher.classList.remove('tt-hidden');
+
+    document.getElementById('ttTeacherGreeting').textContent='Selamat datang, '+user.nama+'!';
+    document.getElementById('ttTeacherCode').textContent=user.kode;
+
+    const students=ttReadAccounts().filter(a=>
+      a.peran==='siswa'&&a.guruId===user.id
+    );
+
+    document.getElementById('ttStudentList').innerHTML=
+      students.length
+      ?students.map((s,i)=>'<div class="tt-student">'+(i+1)+'. '+s.nama+'</div>').join('')
+      :'<p class="tt-sub">Belum ada siswa yang bergabung.</p>';
+
+  }else{
+    teacher.classList.add('tt-hidden');
+    app.style.display='block';
+
+    localStorage.setItem('taskGardenUserName',user.nama);
+
+    if(typeof updateUserNameUI==='function')updateUserNameUI();
+    if(typeof updateDate==='function')updateDate();
+    if(typeof displayTasks==='function')displayTasks();
+    if(typeof updateGarden==='function')updateGarden();
+    if(typeof updateHomeStats==='function')updateHomeStats();
+  }
+}
+
+function ttLogout(){
+  localStorage.removeItem('temantumbuhSesi');
+  location.reload();
+}
+
+document.addEventListener('DOMContentLoaded',function(){
+  const id=localStorage.getItem('temantumbuhSesi');
+
+  if(!id)return;
+
+  const user=ttReadAccounts().find(a=>a.id===id);
+
+  if(user)ttOpenAccount(user);
+});
+</script>
 </body>
 </html>
