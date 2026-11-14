@@ -1197,7 +1197,7 @@ input:focus,textarea:focus,select:focus{
 .tt-chat-head{padding:15px 17px;background:linear-gradient(120deg,#8f78c5,#c39acb);color:white;display:flex;justify-content:space-between;align-items:center}
 .tt-chat-head small{display:block;opacity:.85;margin-top:3px}.tt-chat-head button{border:0;background:#ffffff33;color:white;border-radius:9px;padding:7px 10px}
 .tt-chat-messages{padding:15px;overflow:auto;min-height:180px;flex:1;background:#fbf9fd}.tt-chat-message{max-width:88%;padding:10px 12px;border-radius:14px;margin:8px 0;background:#eee9f6;color:#514766;font-size:13px;line-height:1.5;overflow-wrap:anywhere}
-.tt-chat-message.mine{margin-left:auto;background:#e3f2e5;color:#365c3d}.tt-chat-message small{display:block;font-size:10px;opacity:.65;margin-top:5px}.tt-chat-context{font-size:11px;font-weight:800;color:#7864a8;padding-bottom:5px;margin-bottom:6px;border-bottom:1px solid #ffffff88}
+.tt-chat-message.mine{margin-left:auto;background:#e3f2e5;color:#365c3d}.tt-chat-message small{display:block;font-size:10px;opacity:.65;margin-top:5px}.tt-unread-badge{display:inline-block;margin-left:5px;min-width:20px;padding:2px 6px;border-radius:20px;background:#d94f72;color:#fff;font-size:11px;text-align:center}.tt-unread-badge[hidden]{display:none}.tt-chat-context{font-size:11px;font-weight:800;color:#7864a8;padding-bottom:5px;margin-bottom:6px;border-bottom:1px solid #ffffff88}
 .tt-chat-compose{padding:12px;display:flex;gap:8px;border-top:1px solid #eee7f5}.tt-chat-compose textarea{min-height:44px;max-height:100px;resize:vertical;flex:1}
 .tt-chat-compose button{border:0;border-radius:12px;padding:0 16px;background:#806bb0;color:#fff;font-weight:700}.tt-chat-hint{padding:8px 14px;color:#8a8197;font-size:11px;background:#fff}
 </style>
@@ -1289,7 +1289,7 @@ input:focus,textarea:focus,select:focus{
   <div id="ttStudentTeacherInfo" style="display:block;margin-top:16px;padding:12px 14px;border-radius:15px;background:rgba(255,255,255,.94);color:#5b4d70;box-shadow:0 4px 14px rgba(50,35,70,.08);font-size:13px">
     <span style="display:block;font-size:11px;color:#887b9a;margin-bottom:4px">Guru BK pendamping</span>
     <strong id="ttStudentTeacherName">Memuat nama Guru BK...</strong>
-    <span id="ttStudentTeacherStatus" style="display:block;font-size:11px;margin-top:4px;color:#887b9a">Sedang memuat informasi Guru BK…</span><button class="tt-chat-open" type="button" onclick="ttOpenStudentChat()">💬 Hubungi Guru BK</button>
+    <span id="ttStudentTeacherStatus" style="display:block;font-size:11px;margin-top:4px;color:#887b9a">Sedang memuat informasi Guru BK…</span><button id="ttStudentChatButton" class="tt-chat-open" type="button" onclick="ttOpenStudentChat()">💬 Hubungi Guru BK <span class="tt-unread-badge" id="ttStudentUnread" hidden>0</span></button>
   </div>
 </header>
 
@@ -3186,6 +3186,7 @@ async function ttAfterAuth(user){
   }
   ttActiveUser=user;
   ttCurrentProfile=profile;
+  ttStartUnreadUpdates();
   if(profile.role==='siswa'){
     // Kode undangan disimpan juga di metadata Auth agar tidak hilang saat
     // pendaftaran memerlukan konfirmasi email atau login dari perangkat lain.
@@ -3326,6 +3327,22 @@ async function ttLoadTeacherStudents(teacherId){
 }
 function ttEscape(value){return String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
 
+let ttUnreadTimer=null;
+async function ttRefreshUnreadCounts(){
+ if(!ttActiveUser||!ttCurrentProfile)return;
+ const teacherId=ttCurrentProfile.role==='guru'?ttActiveUser.id:ttCurrentProfile.teacher_id;
+ const studentId=ttCurrentProfile.role==='siswa'?ttActiveUser.id:null;
+ let query=ttSupabase.from('tt_chat_messages').select('id',{count:'exact',head:true}).eq('teacher_id',teacherId).is('read_at',null).neq('sender_id',ttActiveUser.id);
+ if(studentId)query=query.eq('student_id',studentId);
+ const {count,error}=await query;
+ const badge=document.getElementById(ttCurrentProfile.role==='siswa'?'ttStudentUnread':'ttTeacherUnread');
+ if(!error&&badge){badge.textContent=String(count||0);badge.hidden=!(count>0);}
+}
+function ttStartUnreadUpdates(){
+ if(ttUnreadTimer)clearInterval(ttUnreadTimer);
+ ttRefreshUnreadCounts();
+ ttUnreadTimer=setInterval(ttRefreshUnreadCounts,10000);
+}
 function ttOpenStudentChat(){
  if(!ttActiveUser||!ttCurrentProfile||ttCurrentProfile.role!=='siswa'||!ttCurrentProfile.teacher_id){alert('Akun siswa belum terhubung dengan Guru BK.');return;}
  ttOpenChat({teacher_id:ttCurrentProfile.teacher_id,student_id:ttActiveUser.id,title:'Guru BK pendamping',subtitle:'Percakapan pribadi dengan Guru BK'});
@@ -3353,6 +3370,8 @@ function ttCloseChat(){document.getElementById('ttChatOverlay').classList.remove
 async function ttLoadChatMessages(){
  if(!ttChatPair||ttChatLoading)return;
  ttChatLoading=true;
+ const pairAtStart=ttChatPair;
+ await ttSupabase.from('tt_chat_messages').update({read_at:new Date().toISOString()}).eq('teacher_id',pairAtStart.teacher_id).eq('student_id',pairAtStart.student_id).neq('sender_id',ttActiveUser.id).is('read_at',null);
  const box=document.getElementById('ttChatMessages');
  const {data,error}=await ttSupabase.from('tt_chat_messages').select('id,sender_id,message,created_at,context_category').eq('teacher_id',ttChatPair.teacher_id).eq('student_id',ttChatPair.student_id).order('created_at',{ascending:true});
  if(error){box.innerHTML='<div class="tt-empty">Pesan belum dapat dimuat. '+ttEscape(error.message)+'</div>';ttChatLoading=false;return;}
@@ -3360,6 +3379,7 @@ async function ttLoadChatMessages(){
  box.innerHTML=data.map(m=>'<div class="tt-chat-message '+(m.sender_id===ttActiveUser.id?'mine':'')+'>'+(m.context_category?'<div class="tt-chat-context">↳ Tanggapan untuk: '+ttEscape(ttTeacherCategoryLabel(m.context_category))+'</div>':'')+ttEscape(m.message).replace(/\\n/g,'<br>')+'<small>'+(m.sender_id===ttActiveUser.id?'Anda':'Teman percakapan')+' · '+new Date(m.created_at).toLocaleString('id-ID',{dateStyle:'medium',timeStyle:'short'})+'</small></div>').join('');
  box.scrollTop=box.scrollHeight;
  ttChatLoading=false;
+ ttRefreshUnreadCounts();
 }
 async function ttSendChat(event){
  event.preventDefault();
