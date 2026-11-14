@@ -3105,7 +3105,7 @@ const TT_DATA_KEYS = [
   'taskGardenReflection','taskGardenEvaluation','temanTumbuhStudyPlans','taskGardenUserName'
 ];
 let ttActiveUser = null;
-let ttSyncTimer = null;
+const ttSyncTimers = new Map();
 let ttHydrating = false;
 
 function ttShowRegister(){
@@ -3257,17 +3257,29 @@ async function ttLoadStudentData(userId,fullName){
   ttHydrating=false;
   return true;
 }
+async function ttWriteStudentData(ownerId,key,value){
+  let payload;
+  try{payload=JSON.parse(value);}catch(e){payload=value;}
+  try{
+    const {error}=await ttSupabase.from('student_data').upsert({
+      owner_id:ownerId,category:key,payload,updated_at:new Date().toISOString()
+    },{onConflict:'owner_id,category'});
+    if(error) console.error('Sinkronisasi TemanTumbuh gagal:',key,error.message);
+  }catch(error){
+    console.error('Sinkronisasi TemanTumbuh gagal:',key,error);
+  }
+}
 function ttScheduleSync(key,value){
   if(ttHydrating||!ttActiveUser||!TT_DATA_KEYS.includes(key)) return;
-  clearTimeout(ttSyncTimer);
-  ttSyncTimer=setTimeout(async()=>{
-    let payload;
-    try{payload=JSON.parse(value);}catch(e){payload=value;}
-    const {error}=await ttSupabase.from('student_data').upsert({
-      owner_id:ttActiveUser.id,category:key,payload,updated_at:new Date().toISOString()
-    },{onConflict:'owner_id,category'});
-    if(error) console.warn('Sinkronisasi TemanTumbuh gagal:',error.message);
-  },500);
+  // Simpan ID pemilik saat perubahan terjadi; jangan membaca ttActiveUser
+  // belakangan karena pengguna mungkin sudah keluar sebelum timer berjalan.
+  const ownerId=ttActiveUser.id;
+  if(ttSyncTimers.has(key)) clearTimeout(ttSyncTimers.get(key));
+  const timer=setTimeout(()=>{
+    ttSyncTimers.delete(key);
+    ttWriteStudentData(ownerId,key,value);
+  },250);
+  ttSyncTimers.set(key,timer);
 }
 // Simpan otomatis ke cloud setiap fitur lama menyimpan data di localStorage.
 const ttOriginalSetItem=Storage.prototype.setItem;
