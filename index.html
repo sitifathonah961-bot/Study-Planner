@@ -1187,6 +1187,9 @@ input:focus,textarea:focus,select:focus{
 }
 </style>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style id="tt-teacher-dashboard-style">
+#ttTeacher{padding:22px 14px 40px;background:linear-gradient(145deg,#f7f2ff,#fff8fb);font-family:Arial,sans-serif;color:#514766;min-height:100vh}.tt-teacher-shell{max-width:900px;margin:auto}.tt-teacher-head,.tt-teacher-content{background:#fff;border:1px solid #eee7f5;border-radius:22px;padding:20px;box-shadow:0 8px 28px rgba(104,82,143,.08)}.tt-teacher-head{text-align:center}.tt-teacher-brand{font-weight:800;color:#927bc4;margin-bottom:12px}.tt-teacher-head h1{margin:0;color:#7864a8;font-size:25px}.tt-teacher-head>p{font-size:13px;color:#81798e}.tt-invite-panel{margin:18px auto 0;max-width:360px;background:#f6f1ff;border:1px dashed #b8a6dc;border-radius:16px;padding:13px;display:grid;gap:5px}.tt-invite-panel span,.tt-invite-panel small{font-size:11px;color:#81798e}.tt-invite-panel strong{font-size:25px;letter-spacing:3px;color:#7864a8}.tt-teacher-tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:14px 0}.tt-teacher-tabs button{border:1px solid #eee7f5;background:#fff;border-radius:14px;padding:12px 5px;color:#75688a;font-weight:700;font-size:12px;cursor:pointer}.tt-teacher-tabs button.active{background:#927bc4;color:#fff;border-color:#927bc4}.tt-teacher-content{min-height:230px}.tt-teacher-view h2{font-size:18px;color:#7864a8;margin:2px 0 12px}.tt-teacher-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-bottom:18px}.tt-teacher-stat{background:linear-gradient(135deg,#f7f2ff,#fff7fa);border:1px solid #eee7f5;border-radius:16px;padding:15px}.tt-teacher-stat b{display:block;font-size:25px;color:#7864a8}.tt-teacher-stat span{font-size:12px;color:#81798e}.tt-teacher-card{border:1px solid #eee7f5;border-radius:15px;padding:14px;margin:9px 0;background:#fff}.tt-teacher-card button.tt-open-student{width:100%;border:0;background:transparent;text-align:left;padding:0;color:#514766;font:inherit;cursor:pointer}.tt-teacher-card strong{font-size:14px}.tt-teacher-card small{display:block;color:#8a8197;font-size:11px;margin-top:5px}.tt-teacher-card .tt-card-arrow{float:right;color:#927bc4;font-size:18px}.tt-teacher-data{background:#faf8fd;border:1px solid #f0eaf6;border-radius:12px;padding:12px;margin:8px 0}.tt-teacher-data summary{font-size:13px;font-weight:700;color:#6e5a94;cursor:pointer}.tt-teacher-data pre{white-space:pre-wrap;overflow-wrap:anywhere;font:12px/1.55 Arial,sans-serif;color:#655b72;margin:10px 0 0}.tt-empty{padding:22px 12px;text-align:center;border:1px dashed #e5dced;border-radius:14px;color:#8a8197;font-size:13px}.tt-back{border:0;background:#f2eafa;color:#6e5a94;border-radius:10px;padding:9px 12px;margin-bottom:12px;cursor:pointer}@media(max-width:480px){#ttTeacher{padding:12px 10px 28px}.tt-teacher-head,.tt-teacher-content{padding:15px}.tt-teacher-tabs{gap:5px}.tt-teacher-tabs button{font-size:10px;padding:11px 2px}.tt-teacher-grid{gap:7px}.tt-teacher-stat{padding:12px}.tt-teacher-stat b{font-size:22px}}
+</style>
 </head>
 
 <body>
@@ -1234,18 +1237,9 @@ input:focus,textarea:focus,select:focus{
 </div>
 
 <div id="ttTeacher" class="tt-hidden">
-  <div class="tt-top">
-    <div class="tt-box">
-      <div class="tt-brand">🌷</div>
-      <h1>Dashboard Guru BK</h1>
-      <p class="tt-sub" id="ttTeacherGreeting">Selamat datang!</p>
-      <p class="tt-sub">Bagikan kode ini kepada siswa.</p>
-      <div class="tt-code" id="ttTeacherCode">Memuat...</div>
-      <h2 style="font-size:18px;margin-top:22px">Siswa yang bergabung</h2>
-      <div id="ttStudentList"><p class="tt-sub">Memuat data siswa...</p></div>
-      <button class="tt-action tt-secondary" onclick="ttLogout()">Keluar</button>
-    </div>
-  </div>
+ <div class="tt-teacher-shell"><header class="tt-teacher-head"><div class="tt-teacher-brand">🌷 TemanTumbuh</div><h1>Dashboard Guru BK</h1><p id="ttTeacherGreeting">Selamat datang!</p><div class="tt-invite-panel"><span>Kode undangan siswa</span><strong id="ttTeacherCode">Memuat...</strong><small>Bagikan kode ini kepada siswa agar terhubung dengan akun Anda.</small></div></header>
+ <nav class="tt-teacher-tabs"><button class="active" data-tt-tab="ringkasan" onclick="ttTeacherTab('ringkasan',this)">🏡 Ringkasan</button><button data-tt-tab="siswa" onclick="ttTeacherTab('siswa',this)">👥 Siswa</button><button data-tt-tab="progres" onclick="ttTeacherTab('progres',this)">🌱 Progres</button><button data-tt-tab="evaluasi" onclick="ttTeacherTab('evaluasi',this)">📝 Evaluasi</button></nav>
+ <main class="tt-teacher-content"><section class="tt-teacher-view" id="ttTeacherViewRingkasan"><div id="ttTeacherSummary"></div></section><section class="tt-teacher-view tt-hidden" id="ttTeacherViewSiswa"><div id="ttTeacherStudents"></div></section><section class="tt-teacher-view tt-hidden" id="ttTeacherViewProgres"><div id="ttTeacherProgress"></div></section><section class="tt-teacher-view tt-hidden" id="ttTeacherViewEvaluasi"><div id="ttTeacherEvaluations"></div></section><section class="tt-teacher-view tt-hidden" id="ttTeacherViewDetail"><button class="tt-back" onclick="ttTeacherTab('siswa')">← Kembali ke siswa</button><div id="ttTeacherStudentDetail"></div></section><button class="tt-action tt-secondary" onclick="ttLogout()">Keluar</button></main></div>
 </div>
 <!-- ================= USER NAME ================= -->
 <div class="name-overlay hidden" id="nameOverlay" aria-hidden="true">
@@ -3290,24 +3284,24 @@ Storage.prototype.setItem=function(key,value){
   ttOriginalSetItem.call(this,key,value);
   if(this===window.localStorage) ttScheduleSync(String(key),String(value));
 };
+let ttTeacherStudentCache=[];
+function ttTeacherTab(tab,button){document.querySelectorAll('.tt-teacher-tabs button').forEach(b=>b.classList.toggle('active',b.dataset.ttTab===tab));document.querySelectorAll('.tt-teacher-view').forEach(v=>v.classList.add('tt-hidden'));const target=document.getElementById('ttTeacherView'+tab.charAt(0).toUpperCase()+tab.slice(1));if(target)target.classList.remove('tt-hidden');if(button)button.classList.add('active');}
+function ttTeacherOpenStudent(id){const s=ttTeacherStudentCache.find(x=>x.id===id);if(!s)return;document.querySelectorAll('.tt-teacher-view').forEach(v=>v.classList.add('tt-hidden'));document.getElementById('ttTeacherViewDetail').classList.remove('tt-hidden');document.querySelectorAll('.tt-teacher-tabs button').forEach(b=>b.classList.remove('active'));const rows=s.rows||[];document.getElementById('ttTeacherStudentDetail').innerHTML='<h2>'+ttEscape(s.full_name||'Siswa')+'</h2><p style="font-size:12px;color:#8a8197">Detail data belajar siswa</p>'+(rows.length?rows.map(row=>'<details class="tt-teacher-data" open><summary>'+ttEscape(ttTeacherCategoryLabel(row.category))+'</summary><pre>'+ttEscape(JSON.stringify(row.payload,null,2))+'</pre></details>').join(''):'<div class="tt-empty">Belum ada progres tersimpan.</div>');}
+function ttTeacherCategoryLabel(key){const labels={taskGardenTasks:'Daftar tugas',taskGardenBreakdown:'Rincian kegiatan',taskGardenPriorityTasks:'Prioritas belajar',taskGardenTargets:'Target belajar',taskGardenReflection:'Refleksi diri',taskGardenEvaluation:'Evaluasi belajar',temanTumbuhStudyPlans:'Rencana belajar',taskGardenUserName:'Profil siswa'};return labels[key]||key;}
 async function ttLoadTeacherStudents(teacherId){
-  const box=document.getElementById('ttStudentList');
-  box.innerHTML='<p class="tt-sub">Memuat data siswa...</p>';
-  const {data:students,error}=await ttSupabase.from('profiles')
-    .select('id,full_name,created_at').eq('teacher_id',teacherId).eq('role','siswa').order('full_name');
-  if(error){box.textContent='Data siswa belum dapat dimuat: '+ttFriendlyError(error);return;}
-  if(!students||!students.length){box.innerHTML='<p class="tt-sub">Belum ada siswa yang bergabung. Bagikan kode undangan di atas.</p>';return;}
-  const cards=[];
-  for(const student of students){
-    const {data:rows,error:dataError}=await ttSupabase.from('student_data')
-      .select('category,payload,updated_at').eq('owner_id',student.id).order('category');
-    let details=dataError?'<p>Data progres belum dapat dimuat.</p>':(rows||[]).map(row=>{
-      const pretty=JSON.stringify(row.payload,null,2);
-      return '<details style="margin:8px 0;padding:9px;background:#faf7ff;border-radius:10px"><summary>'+ttEscape(row.category)+'</summary><pre style="white-space:pre-wrap;overflow-wrap:anywhere;font-size:11px;margin-top:8px">'+ttEscape(pretty)+'</pre></details>';
-    }).join('')||'<p class="tt-sub">Belum ada progres tersimpan.</p>';
-    cards.push('<div class="tt-student"><strong>'+ttEscape(student.full_name||'Siswa')+'</strong>'+details+'</div>');
-  }
-  box.innerHTML=cards.join('');
+ const summary=document.getElementById('ttTeacherSummary'),studentBox=document.getElementById('ttTeacherStudents'),progressBox=document.getElementById('ttTeacherProgress'),evaluationBox=document.getElementById('ttTeacherEvaluations');[summary,studentBox,progressBox,evaluationBox].forEach(x=>x.innerHTML='<div class="tt-empty">Memuat data siswa...</div>');
+ const {data:students,error}=await ttSupabase.from('profiles').select('id,full_name,created_at').eq('teacher_id',teacherId).eq('role','siswa').order('full_name');
+ if(error){[summary,studentBox,progressBox,evaluationBox].forEach(x=>x.textContent='Data belum dapat dimuat: '+ttFriendlyError(error));return;}
+ ttTeacherStudentCache=[];for(const student of(students||[])){const {data:rows,error:dataError}=await ttSupabase.from('student_data').select('category,payload,updated_at').eq('owner_id',student.id).order('category');ttTeacherStudentCache.push({...student,rows:dataError?[]:(rows||[])});}
+ const total=ttTeacherStudentCache.length,withProgress=ttTeacherStudentCache.filter(x=>x.rows.length).length,evalCount=ttTeacherStudentCache.reduce((n,x)=>n+x.rows.filter(r=>/evaluation|reflection/i.test(r.category)).length,0);
+ summary.innerHTML='<h2>Ringkasan kelas</h2><div class="tt-teacher-grid"><div class="tt-teacher-stat"><b>'+total+'</b><span>Siswa terhubung</span></div><div class="tt-teacher-stat"><b>'+withProgress+'</b><span>Siswa memiliki progres</span></div><div class="tt-teacher-stat"><b>'+evalCount+'</b><span>Data evaluasi/refleksi</span></div><div class="tt-teacher-stat"><b>'+Math.max(0,total-withProgress)+'</b><span>Belum ada progres</span></div></div><p style="font-size:13px;color:#81798e">Pilih menu di atas untuk melihat data lebih rinci.</p>';
+ const empty='<div class="tt-empty">Belum ada siswa yang bergabung. Bagikan kode undangan di atas.</div>';
+ const card=x=>'<div class="tt-teacher-card"><button class="tt-open-student" onclick="ttTeacherOpenStudent(\''+x.id+'\')"><span class="tt-card-arrow">›</span><strong>'+ttEscape(x.full_name||'Siswa')+'</strong><small>'+x.rows.length+' bagian data tersimpan · Klik untuk detail</small></button></div>';
+ studentBox.innerHTML='<h2>Daftar siswa</h2>'+(ttTeacherStudentCache.map(card).join('')||empty);
+ const progress=ttTeacherStudentCache.filter(x=>x.rows.some(r=>!/evaluation|reflection/i.test(r.category)));
+ progressBox.innerHTML='<h2>Progres belajar</h2>'+(progress.map(card).join('')||'<div class="tt-empty">Belum ada data progres belajar.</div>');
+ const evaluations=ttTeacherStudentCache.filter(x=>x.rows.some(r=>/evaluation|reflection/i.test(r.category)));
+ evaluationBox.innerHTML='<h2>Hasil evaluasi</h2>'+(evaluations.map(card).join('')||'<div class="tt-empty">Belum ada hasil evaluasi tersimpan.</div>');
 }
 function ttEscape(value){return String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
 async function ttLogout(){
