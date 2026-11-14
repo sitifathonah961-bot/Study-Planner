@@ -3112,6 +3112,7 @@ const TT_DATA_KEYS = [
 let ttActiveUser = null;
 let ttCurrentProfile = null;
 let ttChatPair = null;
+let ttChatChannel = null;
 const ttSyncTimers = new Map();
 let ttHydrating = false;
 
@@ -3333,14 +3334,16 @@ function ttOpenTeacherChat(studentId){
  ttOpenChat({teacher_id:ttActiveUser.id,student_id:studentId,title:student.full_name||'Siswa',subtitle:'Percakapan pribadi · '+(student.full_name||'Siswa')});
 }
 async function ttOpenChat(pair){
+ if(ttChatChannel){ttSupabase.removeChannel(ttChatChannel);ttChatChannel=null;}
  ttChatPair=pair;
  document.getElementById('ttChatTitle').textContent=pair.title;
  document.getElementById('ttChatSubtitle').textContent=pair.subtitle;
  document.getElementById('ttChatOverlay').classList.add('show');
  document.getElementById('ttChatMessages').innerHTML='<div class="tt-empty">Memuat pesan...</div>';
  await ttLoadChatMessages();
+ ttChatChannel=ttSupabase.channel('tt-chat-'+pair.teacher_id+'-'+pair.student_id).on('postgres_changes',{event:'*',schema:'public',table:'tt_chat_messages'},payload=>{if(ttChatPair&&payload.new&&payload.new.teacher_id===ttChatPair.teacher_id&&payload.new.student_id===ttChatPair.student_id)ttLoadChatMessages();}).subscribe();
 }
-function ttCloseChat(){document.getElementById('ttChatOverlay').classList.remove('show');ttChatPair=null;}
+function ttCloseChat(){document.getElementById('ttChatOverlay').classList.remove('show');ttChatPair=null;if(ttChatChannel){ttSupabase.removeChannel(ttChatChannel);ttChatChannel=null;}}
 async function ttLoadChatMessages(){
  if(!ttChatPair)return;
  const box=document.getElementById('ttChatMessages');
