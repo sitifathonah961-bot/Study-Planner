@@ -1247,6 +1247,23 @@ input:focus,textarea:focus,select:focus{
     </div>
   </div>
 </div>
+
+<div id="ttAdmin" class="tt-hidden">
+  <div class="tt-top">
+    <div class="tt-box">
+      <div class="tt-brand">🌱</div>
+      <h1>Dashboard Admin</h1>
+      <p class="tt-sub" id="ttAdminGreeting">Selamat datang, Admin!</p>
+      <div style="background:#f5efff;border:1px solid #e8def5;border-radius:14px;padding:14px;margin:16px 0">
+        <strong style="color:#66538f">Persetujuan Guru BK</strong>
+        <p class="tt-sub" style="margin:6px 0 0">Periksa pendaftaran Guru BK. Pilih Setujui atau Tolak.</p>
+      </div>
+      <div id="ttPendingTeachers"><p class="tt-sub">Memuat pendaftaran...</p></div>
+      <button class="tt-action tt-secondary" onclick="ttLogout()">Keluar</button>
+    </div>
+  </div>
+</div>
+
 <!-- ================= USER NAME ================= -->
 <div class="name-overlay hidden" id="nameOverlay" aria-hidden="true">
   <div class="name-modal" role="dialog" aria-modal="true" aria-labelledby="nameModalTitle">
@@ -3169,7 +3186,20 @@ async function ttAfterAuth(user){
     ttMessage('ttLoginError','Akun Guru BK '+status+'. Silakan coba lagi setelah ada persetujuan.');
     await ttSupabase.auth.signOut();return;
   }
+  if(!['admin','guru','siswa'].includes(profile.role)){
+    ttMessage('ttLoginError','Peran akun tidak dikenali. Hubungi pengelola aplikasi.');
+    await ttSupabase.auth.signOut();return;
+  }
   ttActiveUser=user;
+  if(profile.role==='admin'){
+    document.getElementById('ttPortal').classList.add('tt-hidden');
+    document.getElementById('ttTeacher').classList.add('tt-hidden');
+    document.getElementById('ttStudentApp').style.display='none';
+    document.getElementById('ttAdmin').classList.remove('tt-hidden');
+    document.getElementById('ttAdminGreeting').textContent='Selamat datang, '+(profile.full_name||'Admin')+'!';
+    await ttLoadPendingTeachers();
+    return;
+  }
   if(profile.role==='siswa'){
     const pendingCode=localStorage.getItem('ttPendingTeacherCode');
     if(pendingCode){
@@ -3232,6 +3262,25 @@ Storage.prototype.setItem=function(key,value){
   ttOriginalSetItem.call(this,key,value);
   if(this===window.localStorage) ttScheduleSync(String(key),String(value));
 };
+async function ttLoadPendingTeachers(){
+  const box=document.getElementById('ttPendingTeachers');
+  box.innerHTML='<p class="tt-sub">Memuat pendaftaran Guru BK...</p>';
+  const {data,error}=await ttSupabase.rpc('admin_list_pending_teachers');
+  if(error){box.innerHTML='<p class="tt-error">Daftar belum dapat dimuat: '+ttEscape(ttFriendlyError(error))+'</p>';return;}
+  if(!data||!data.length){box.innerHTML='<div class="tt-student" style="text-align:center;padding:22px">🌷<br><strong>Belum ada pendaftaran menunggu.</strong></div>';return;}
+  box.innerHTML=data.map(t=>{
+    const date=t.created_at?new Date(t.created_at).toLocaleDateString('id-ID',{day:'numeric',month:'long',year:'numeric'}):'Tanggal tidak tersedia';
+    return '<div class="tt-student"><strong>'+ttEscape(t.full_name||'Guru BK')+'</strong><p class="tt-sub" style="margin:5px 0 10px">Mendaftar: '+ttEscape(date)+'</p><div style="display:flex;gap:8px"><button class="tt-action" style="margin:0;flex:1" onclick="ttDecideTeacher(\''+ttEscape(t.id)+'\',\'approved\')">Setujui</button><button class="tt-action" style="margin:0;flex:1;background:#fae6e8;color:#a45b69" onclick="ttDecideTeacher(\''+ttEscape(t.id)+'\',\'rejected\')">Tolak</button></div></div>';
+  }).join('');
+}
+async function ttDecideTeacher(teacherId,decision){
+  const label=decision==='approved'?'menyetujui':'menolak';
+  if(!confirm('Yakin ingin '+label+' pendaftaran Guru BK ini?')) return;
+  const {error}=await ttSupabase.rpc('admin_set_teacher_approval',{p_teacher_id:teacherId,p_decision:decision});
+  if(error){alert('Belum berhasil memproses: '+ttFriendlyError(error));return;}
+  alert(decision==='approved'?'Guru BK berhasil disetujui.':'Pendaftaran Guru BK ditolak.');
+  await ttLoadPendingTeachers();
+}
 async function ttLoadTeacherStudents(teacherId){
   const box=document.getElementById('ttStudentList');
   box.innerHTML='<p class="tt-sub">Memuat data siswa...</p>';
