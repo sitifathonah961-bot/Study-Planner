@@ -3221,20 +3221,23 @@ async function ttLoadStudentTeacher(profile){
   }
   name.textContent='Memuat nama Guru BK...';
   status.textContent='';
+  // Utamakan RPC, lalu gunakan relasi teacher_id dari profil sebagai cadangan.
   const {data:teacher,error}=await ttSupabase.rpc('get_my_teacher_info');
-  if(error){
-    name.textContent='Guru BK terhubung';
-    status.textContent='Relasi tersimpan, tetapi informasi nama belum dapat dimuat.';
-    console.warn('Gagal memuat informasi Guru BK:',error.message);
-    return;
+  let teacherInfo=Array.isArray(teacher)?teacher[0]:teacher;
+  if(error || !teacherInfo?.full_name){
+    console.warn('RPC nama Guru BK tidak tersedia; mencoba profil terkait.',error?.message||'Data kosong');
+    const {data:fallback,error:fallbackError}=await ttSupabase
+      .from('profiles').select('full_name,role').eq('id',profile.teacher_id).maybeSingle();
+    if(!fallbackError && fallback?.role==='guru' && fallback.full_name){
+      teacherInfo=fallback;
+    }else{
+      name.textContent='Guru BK terhubung';
+      status.textContent='Relasi akun tersimpan, tetapi nama belum dapat dimuat. Hubungi pengelola jika berlanjut.';
+      console.warn('Fallback profil Guru BK gagal:',fallbackError?.message||'Profil tidak ditemukan');
+      return;
+    }
   }
-  const teacherInfo=Array.isArray(teacher)?teacher[0]:teacher;
-  if(!teacherInfo||!teacherInfo.full_name){
-    name.textContent='Profil Guru BK belum tersedia';
-    status.textContent='Hubungan akun tersimpan, tetapi data nama Guru BK belum ditemukan.';
-    return;
-  }
-  name.textContent=teacherInfo.full_name||'Guru BK';
+  name.textContent=teacherInfo.full_name;
   status.textContent='Pendamping belajarmu di TemanTumbuh 🌱';
 }
 
