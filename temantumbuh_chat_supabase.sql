@@ -10,6 +10,8 @@ create table if not exists public.tt_chat_messages (
   created_at timestamptz not null default now()
 );
 
+alter table public.tt_chat_messages add column if not exists context_category text;
+
 create index if not exists tt_chat_pair_created_idx
   on public.tt_chat_messages (teacher_id, student_id, created_at);
 
