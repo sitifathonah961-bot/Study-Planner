@@ -11,6 +11,10 @@ create table if not exists public.tt_chat_messages (
 );
 
 alter table public.tt_chat_messages add column if not exists context_category text;
+alter table public.tt_chat_messages add column if not exists read_at timestamptz;
+
+create index if not exists tt_chat_unread_idx
+  on public.tt_chat_messages (teacher_id, student_id, read_at, sender_id);
 
 create index if not exists tt_chat_pair_created_idx
   on public.tt_chat_messages (teacher_id, student_id, created_at);
@@ -51,3 +55,16 @@ begin
 exception when undefined_object then
   raise notice 'Publication supabase_realtime belum tersedia; pesan tetap dapat dimuat saat chat dibuka.';
 end $$;
+
+
+-- Penerima dapat menandai pesan sebagai sudah dibaca saat membuka percakapan.
+drop policy if exists "tt chat recipient can mark read" on public.tt_chat_messages;
+create policy "tt chat recipient can mark read"
+on public.tt_chat_messages for update to authenticated
+using (
+  (auth.uid() = teacher_id and sender_id = student_id and read_at is null)
+  or (auth.uid() = student_id and sender_id = teacher_id and read_at is null)
+)
+with check (
+  (auth.uid() = teacher_id or auth.uid() = student_id)
+);
