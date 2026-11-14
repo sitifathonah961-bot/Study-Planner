@@ -1190,6 +1190,17 @@ input:focus,textarea:focus,select:focus{
 <style id="tt-teacher-dashboard-style">
 #ttTeacher{padding:22px 14px 40px;background:linear-gradient(145deg,#f7f2ff,#fff8fb);font-family:Arial,sans-serif;color:#514766;min-height:100vh}.tt-teacher-shell{max-width:900px;margin:auto}.tt-teacher-head,.tt-teacher-content{background:#fff;border:1px solid #eee7f5;border-radius:22px;padding:20px;box-shadow:0 8px 28px rgba(104,82,143,.08)}.tt-teacher-head{text-align:center}.tt-teacher-brand{font-weight:800;color:#927bc4;margin-bottom:12px}.tt-teacher-head h1{margin:0;color:#7864a8;font-size:25px}.tt-teacher-head>p{font-size:13px;color:#81798e}.tt-invite-panel{margin:18px auto 0;max-width:360px;background:#f6f1ff;border:1px dashed #b8a6dc;border-radius:16px;padding:13px;display:grid;gap:5px}.tt-invite-panel span,.tt-invite-panel small{font-size:11px;color:#81798e}.tt-invite-panel strong{font-size:25px;letter-spacing:3px;color:#7864a8}.tt-teacher-tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:14px 0}.tt-teacher-tabs button{border:1px solid #eee7f5;background:#fff;border-radius:14px;padding:12px 5px;color:#75688a;font-weight:700;font-size:12px;cursor:pointer}.tt-teacher-tabs button.active{background:#927bc4;color:#fff;border-color:#927bc4}.tt-teacher-content{min-height:230px}.tt-teacher-view h2{font-size:18px;color:#7864a8;margin:2px 0 12px}.tt-teacher-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-bottom:18px}.tt-teacher-stat{background:linear-gradient(135deg,#f7f2ff,#fff7fa);border:1px solid #eee7f5;border-radius:16px;padding:15px}.tt-teacher-stat b{display:block;font-size:25px;color:#7864a8}.tt-teacher-stat span{font-size:12px;color:#81798e}.tt-teacher-card{border:1px solid #eee7f5;border-radius:15px;padding:14px;margin:9px 0;background:#fff}.tt-teacher-card button.tt-open-student{width:100%;border:0;background:transparent;text-align:left;padding:0;color:#514766;font:inherit;cursor:pointer}.tt-teacher-card strong{font-size:14px}.tt-teacher-card small{display:block;color:#8a8197;font-size:11px;margin-top:5px}.tt-teacher-card .tt-card-arrow{float:right;color:#927bc4;font-size:18px}.tt-teacher-data{background:#faf8fd;border:1px solid #f0eaf6;border-radius:12px;padding:12px;margin:8px 0}.tt-teacher-data summary{font-size:13px;font-weight:700;color:#6e5a94;cursor:pointer}.tt-teacher-data pre{white-space:pre-wrap;overflow-wrap:anywhere;font:12px/1.55 Arial,sans-serif;color:#655b72;margin:10px 0 0}.tt-empty{padding:22px 12px;text-align:center;border:1px dashed #e5dced;border-radius:14px;color:#8a8197;font-size:13px}.tt-back{border:0;background:#f2eafa;color:#6e5a94;border-radius:10px;padding:9px 12px;margin-bottom:12px;cursor:pointer}@media(max-width:480px){#ttTeacher{padding:12px 10px 28px}.tt-teacher-head,.tt-teacher-content{padding:15px}.tt-teacher-tabs{gap:5px}.tt-teacher-tabs button{font-size:10px;padding:11px 2px}.tt-teacher-grid{gap:7px}.tt-teacher-stat{padding:12px}.tt-teacher-stat b{font-size:22px}}
 </style>
+<style id="tt-chat-style">
+.tt-chat-open{margin-top:10px;width:100%;border:0;border-radius:12px;padding:11px;background:#806bb0;color:#fff;font-weight:700}
+.tt-chat-overlay{display:none;position:fixed;inset:0;z-index:10000;background:rgba(39,30,52,.48);padding:14px;align-items:center;justify-content:center}
+.tt-chat-overlay.show{display:flex}.tt-chat-box{width:min(520px,100%);max-height:88vh;background:#fff;border-radius:20px;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 18px 60px #30204444}
+.tt-chat-head{padding:15px 17px;background:linear-gradient(120deg,#8f78c5,#c39acb);color:white;display:flex;justify-content:space-between;align-items:center}
+.tt-chat-head small{display:block;opacity:.85;margin-top:3px}.tt-chat-head button{border:0;background:#ffffff33;color:white;border-radius:9px;padding:7px 10px}
+.tt-chat-messages{padding:15px;overflow:auto;min-height:180px;flex:1;background:#fbf9fd}.tt-chat-message{max-width:88%;padding:10px 12px;border-radius:14px;margin:8px 0;background:#eee9f6;color:#514766;font-size:13px;line-height:1.5;overflow-wrap:anywhere}
+.tt-chat-message.mine{margin-left:auto;background:#e3f2e5;color:#365c3d}.tt-chat-message small{display:block;font-size:10px;opacity:.65;margin-top:5px}
+.tt-chat-compose{padding:12px;display:flex;gap:8px;border-top:1px solid #eee7f5}.tt-chat-compose textarea{min-height:44px;max-height:100px;resize:vertical;flex:1}
+.tt-chat-compose button{border:0;border-radius:12px;padding:0 16px;background:#806bb0;color:#fff;font-weight:700}.tt-chat-hint{padding:8px 14px;color:#8a8197;font-size:11px;background:#fff}
+</style>
 </head>
 
 <body>
@@ -1278,7 +1289,7 @@ input:focus,textarea:focus,select:focus{
   <div id="ttStudentTeacherInfo" style="display:block;margin-top:16px;padding:12px 14px;border-radius:15px;background:rgba(255,255,255,.94);color:#5b4d70;box-shadow:0 4px 14px rgba(50,35,70,.08);font-size:13px">
     <span style="display:block;font-size:11px;color:#887b9a;margin-bottom:4px">Guru BK pendamping</span>
     <strong id="ttStudentTeacherName">Memuat nama Guru BK...</strong>
-    <span id="ttStudentTeacherStatus" style="display:block;font-size:11px;margin-top:4px;color:#887b9a">Sedang memuat informasi Guru BK…</span>
+    <span id="ttStudentTeacherStatus" style="display:block;font-size:11px;margin-top:4px;color:#887b9a">Sedang memuat informasi Guru BK…</span><button class="tt-chat-open" type="button" onclick="ttOpenStudentChat()">💬 Hubungi Guru BK</button>
   </div>
 </header>
 
@@ -3099,6 +3110,8 @@ const TT_DATA_KEYS = [
   'taskGardenReflection','taskGardenEvaluation','temanTumbuhStudyPlans','taskGardenUserName'
 ];
 let ttActiveUser = null;
+let ttCurrentProfile = null;
+let ttChatPair = null;
 const ttSyncTimers = new Map();
 let ttHydrating = false;
 
@@ -3169,6 +3182,7 @@ async function ttAfterAuth(user){
     await ttSupabase.auth.signOut();return;
   }
   ttActiveUser=user;
+  ttCurrentProfile=profile;
   if(profile.role==='siswa'){
     // Kode undangan disimpan juga di metadata Auth agar tidak hilang saat
     // pendaftaran memerlukan konfirmasi email atau login dari perangkat lain.
@@ -3286,7 +3300,7 @@ Storage.prototype.setItem=function(key,value){
 };
 let ttTeacherStudentCache=[];
 function ttTeacherTab(tab,button){document.querySelectorAll('.tt-teacher-tabs button').forEach(b=>b.classList.toggle('active',b.dataset.ttTab===tab));document.querySelectorAll('.tt-teacher-view').forEach(v=>v.classList.add('tt-hidden'));const target=document.getElementById('ttTeacherView'+tab.charAt(0).toUpperCase()+tab.slice(1));if(target)target.classList.remove('tt-hidden');if(button)button.classList.add('active');}
-function ttTeacherOpenStudent(id){const s=ttTeacherStudentCache.find(x=>x.id===id);if(!s)return;document.querySelectorAll('.tt-teacher-view').forEach(v=>v.classList.add('tt-hidden'));document.getElementById('ttTeacherViewDetail').classList.remove('tt-hidden');document.querySelectorAll('.tt-teacher-tabs button').forEach(b=>b.classList.remove('active'));const rows=s.rows||[];const progress=rows.filter(r=>!/evaluation|reflection/i.test(r.category));const evaluations=rows.filter(r=>/evaluation|reflection/i.test(r.category));const countItems=v=>Array.isArray(v)?v.length:(v&&typeof v==='object'?Object.keys(v).length:(v==null||v===''?0:1));document.getElementById('ttTeacherStudentDetail').innerHTML='<div class="tt-student-profile"><div class="tt-student-avatar">🌱</div><div><h2>'+ttEscape(s.full_name||'Siswa')+'</h2><p>Detail perkembangan belajar</p></div></div><div class="tt-student-overview"><div><strong>'+progress.length+'</strong><span>Bagian progres</span></div><div><strong>'+evaluations.length+'</strong><span>Bagian evaluasi</span></div><div><strong>'+rows.length+'</strong><span>Total data</span></div></div>'+(rows.length?'<h3 class="tt-detail-heading">🌿 Progres belajar</h3>'+(progress.map(ttTeacherRenderRow).join('')||'<div class="tt-empty">Belum ada progres belajar.</div>')+'<h3 class="tt-detail-heading">📝 Evaluasi dan refleksi</h3>'+(evaluations.map(ttTeacherRenderRow).join('')||'<div class="tt-empty">Belum ada evaluasi atau refleksi.</div>'):'<div class="tt-empty">Belum ada progres tersimpan.</div>');}
+function ttTeacherOpenStudent(id){const s=ttTeacherStudentCache.find(x=>x.id===id);if(!s)return;document.querySelectorAll('.tt-teacher-view').forEach(v=>v.classList.add('tt-hidden'));document.getElementById('ttTeacherViewDetail').classList.remove('tt-hidden');document.querySelectorAll('.tt-teacher-tabs button').forEach(b=>b.classList.remove('active'));const rows=s.rows||[];const progress=rows.filter(r=>!/evaluation|reflection/i.test(r.category));const evaluations=rows.filter(r=>/evaluation|reflection/i.test(r.category));const countItems=v=>Array.isArray(v)?v.length:(v&&typeof v==='object'?Object.keys(v).length:(v==null||v===''?0:1));document.getElementById('ttTeacherStudentDetail').innerHTML='<button class="tt-chat-open" type="button" onclick="ttOpenTeacherChat(\''+s.id+'\')">💬 Kirim pesan / masukan kepada siswa</button><div class="tt-student-profile"><div class="tt-student-avatar">🌱</div><div><h2>'+ttEscape(s.full_name||'Siswa')+'</h2><p>Detail perkembangan belajar</p></div></div><div class="tt-student-overview"><div><strong>'+progress.length+'</strong><span>Bagian progres</span></div><div><strong>'+evaluations.length+'</strong><span>Bagian evaluasi</span></div><div><strong>'+rows.length+'</strong><span>Total data</span></div></div>'+(rows.length?'<h3 class="tt-detail-heading">🌿 Progres belajar</h3>'+(progress.map(ttTeacherRenderRow).join('')||'<div class="tt-empty">Belum ada progres belajar.</div>')+'<h3 class="tt-detail-heading">📝 Evaluasi dan refleksi</h3>'+(evaluations.map(ttTeacherRenderRow).join('')||'<div class="tt-empty">Belum ada evaluasi atau refleksi.</div>'):'<div class="tt-empty">Belum ada progres tersimpan.</div>');}
 function ttTeacherCategoryLabel(key){const labels={taskGardenTasks:'Daftar tugas',taskGardenBreakdown:'Rincian kegiatan',taskGardenPriorityTasks:'Prioritas belajar',taskGardenTargets:'Target belajar',taskGardenReflection:'Refleksi diri',taskGardenEvaluation:'Evaluasi belajar',temanTumbuhStudyPlans:'Rencana belajar',taskGardenUserName:'Profil siswa'};return labels[key]||String(key).replace(/([a-z])([A-Z])/g,'$1 $2').replace(/[_-]/g,' ').replace(/^./,c=>c.toUpperCase());}
 function ttTeacherFieldLabel(key){return String(key).replace(/([a-z])([A-Z])/g,'$1 $2').replace(/[_-]/g,' ').replace(/^./,c=>c.toUpperCase());}
 function ttTeacherRenderValue(value){if(value===null||value===undefined||value==='')return '<span class="tt-value-empty">Belum diisi</span>';if(typeof value==='boolean')return value?'Ya':'Tidak';if(Array.isArray(value)){if(!value.length)return '<span class="tt-value-empty">Belum ada item</span>';return '<ul class="tt-value-list">'+value.map((item,i)=>'<li>'+(item&&typeof item==='object'?ttTeacherRenderObject(item):ttTeacherRenderValue(item))+'</li>').join('')+'</ul>';}if(typeof value==='object')return ttTeacherRenderObject(value);return ttEscape(value);}
@@ -3308,6 +3322,45 @@ async function ttLoadTeacherStudents(teacherId){
  evaluationBox.innerHTML='<h2>Hasil evaluasi</h2>'+(evaluations.map(card).join('')||'<div class="tt-empty">Belum ada hasil evaluasi tersimpan.</div>');
 }
 function ttEscape(value){return String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+
+function ttOpenStudentChat(){
+ if(!ttActiveUser||!ttCurrentProfile||ttCurrentProfile.role!=='siswa'||!ttCurrentProfile.teacher_id){alert('Akun siswa belum terhubung dengan Guru BK.');return;}
+ ttOpenChat({teacher_id:ttCurrentProfile.teacher_id,student_id:ttActiveUser.id,title:'Guru BK pendamping',subtitle:'Percakapan pribadi dengan Guru BK'});
+}
+function ttOpenTeacherChat(studentId){
+ const student=ttTeacherStudentCache.find(x=>x.id===studentId);
+ if(!student||!ttActiveUser)return;
+ ttOpenChat({teacher_id:ttActiveUser.id,student_id:studentId,title:student.full_name||'Siswa',subtitle:'Percakapan pribadi · '+(student.full_name||'Siswa')});
+}
+async function ttOpenChat(pair){
+ ttChatPair=pair;
+ document.getElementById('ttChatTitle').textContent=pair.title;
+ document.getElementById('ttChatSubtitle').textContent=pair.subtitle;
+ document.getElementById('ttChatOverlay').classList.add('show');
+ document.getElementById('ttChatMessages').innerHTML='<div class="tt-empty">Memuat pesan...</div>';
+ await ttLoadChatMessages();
+}
+function ttCloseChat(){document.getElementById('ttChatOverlay').classList.remove('show');ttChatPair=null;}
+async function ttLoadChatMessages(){
+ if(!ttChatPair)return;
+ const box=document.getElementById('ttChatMessages');
+ const {data,error}=await ttSupabase.from('tt_chat_messages').select('id,sender_id,message,created_at').eq('teacher_id',ttChatPair.teacher_id).eq('student_id',ttChatPair.student_id).order('created_at',{ascending:true});
+ if(error){box.innerHTML='<div class="tt-empty">Pesan belum dapat dimuat. Pastikan SQL chat sudah dijalankan di Supabase. '+ttEscape(error.message)+'</div>';return;}
+ if(!data||!data.length){box.innerHTML='<div class="tt-empty">Belum ada pesan. Mulai percakapan dengan menyapa siswa atau Guru BK 🌱</div>';return;}
+ box.innerHTML=data.map(m=>'<div class="tt-chat-message '+(m.sender_id===ttActiveUser.id?'mine':'')+'>'+ttEscape(m.message).replace(/\\n/g,'<br>')+'<small>'+(m.sender_id===ttActiveUser.id?'Anda':'Teman percakapan')+' · '+new Date(m.created_at).toLocaleString('id-ID',{dateStyle:'medium',timeStyle:'short'})+'</small></div>').join('');
+ box.scrollTop=box.scrollHeight;
+}
+async function ttSendChat(event){
+ event.preventDefault();
+ const input=document.getElementById('ttChatInput'),message=input.value.trim();
+ if(!message||!ttChatPair||!ttActiveUser)return;
+ const sendButton=event.submitter;if(sendButton)sendButton.disabled=true;
+ const {error}=await ttSupabase.from('tt_chat_messages').insert({teacher_id:ttChatPair.teacher_id,student_id:ttChatPair.student_id,sender_id:ttActiveUser.id,message});
+ if(sendButton)sendButton.disabled=false;
+ if(error){alert('Pesan belum terkirim: '+ttFriendlyError(error));return;}
+ input.value='';await ttLoadChatMessages();
+}
+
 async function ttLogout(){
   ttActiveUser=null;
   await ttSupabase.auth.signOut();
@@ -3321,5 +3374,10 @@ document.addEventListener('DOMContentLoaded',async()=>{
   if(session) await ttAfterAuth(session.user);
 });
 </script>
+<div class="tt-chat-overlay" id="ttChatOverlay" role="dialog" aria-modal="true" aria-label="Pesan Guru BK dan siswa">
+<div class="tt-chat-box"><div class="tt-chat-head"><div><strong id="ttChatTitle">Pesan</strong><small id="ttChatSubtitle">Percakapan pribadi</small></div><button type="button" onclick="ttCloseChat()">Tutup ✕</button></div>
+<div class="tt-chat-messages" id="ttChatMessages"><div class="tt-empty">Memuat pesan...</div></div>
+<div class="tt-chat-hint">Pesan hanya terlihat oleh Guru BK dan siswa yang terhubung.</div>
+<form class="tt-chat-compose" onsubmit="ttSendChat(event)"><textarea id="ttChatInput" maxlength="3000" required placeholder="Tulis pesan..."></textarea><button type="submit">Kirim</button></form></div></div>
 </body>
 </html>
